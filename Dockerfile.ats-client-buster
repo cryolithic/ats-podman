@@ -1,0 +1,61 @@
+FROM debian:buster
+LABEL maintainer="Sebastien Delafond <sdelafond@gmail.com>"
+
+ENV USER=testshell
+
+RUN apt update -q
+
+# install systemd
+RUN apt install -y systemd-sysv
+
+# install ATS utilities
+RUN apt install -y curl
+RUN apt install -y dnsutils
+RUN apt install -y iperf
+RUN apt install -y iputils-ping
+RUN apt install -y mime-construct
+RUN apt install -y miniupnpc
+RUN apt install -y nano
+RUN apt install -y netcat
+RUN apt install -y netcat-openbsd
+RUN apt install -y nmap
+RUN apt install -y ntp 
+RUN apt install -y python
+#RUN apt install -y resolvconf
+RUN apt install -y snmp 
+RUN apt install -y ssh
+RUN apt install -y sudo
+RUN apt install -y telnet
+RUN apt install -y traceroute
+RUN apt install -y wget
+
+# tweak sshd config
+RUN echo "UseDNS no" >> /etc/ssh/sshd_config
+RUN perl -i -pe 's/^(UsePAM).+/$1 no/' /etc/ssh/sshd_config
+
+# create testshell user
+RUN useradd --groups sudo --create-home ${USER}
+RUN echo ${USER}:${USER} | chpasswd
+
+# sudo configuration
+RUN echo "${USER} ALL=(ALL) NOPASSWD: ALL" > /etc/sudoers.d/${USER}
+RUN chmod 600 /etc/sudoers.d/${USER}
+
+# testshell ssh key
+USER ${USER}
+
+RUN install -m 700 -d ~/.ssh
+RUN echo "ssh-rsa AAAAB3NzaC1yc2EAAAABIwAAAQEAzsyeHVYqOzKXLjYg+CfCPXN5WBFEId9Q5+lnjypJSHdU0gVyYwUadm6azFZscKq05eVSiP7XAEIKoLrkjmoxn9I4AEDEqoJ150HBf4xgv4HICVkfOnfCO7QST2vVhWTSr6WpmxN3zmFfhqITGji5tov04tV6cUxY0oy7pSj7DfyPJZGuO9D1Busjo+5BDJ4Ic3oAx7AAwaGHCoOvXONigy9hAiZ3d1yW6RZUfoykCKhxMoi+jOBuw9uHHMRhbKT7R9clFkg602iWjQ1UtBU4h/Z91bWa1zBhTNDSscHPWNTMpnlbkAkAgAXVy5TTiD2+DhVUM6kJ8WoR2gZVeqaQBw==" > ~/.ssh/authorized_keys
+RUN chmod 600 /home/${USER}/.ssh/authorized_keys
+
+USER root
+
+RUN apt install -y isc-dhcp-client
+RUN apt install -y ifupdown
+RUN echo "#!/bin/sh\nip ad flush eth0" > /etc/network/if-pre-up.d/remove-podman-address
+RUN chmod 755 /etc/network/if-pre-up.d/remove-podman-address
+RUN echo "auto eth0\niface eth0 inet dhcp" > /etc/network/interfaces.d/eth0
+# RUN echo "ip route del default && ip route add default via 192.168.2.1" > /etc/dhcp/dhclient-enter-hooks.d/podman-route
+# RUN chmod 755 /etc/dhcp/dhclient-enter-hooks.d/podman-route
+
+CMD [ "/sbin/init" ]

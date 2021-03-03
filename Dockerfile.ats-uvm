@@ -1,0 +1,32 @@
+FROM untangleinc/ngfw-ats:uvm-base
+LABEL maintainer="Sebastien Delafond <sdelafond@gmail.com>"
+
+ARG MIRROR=updates.untangle.com
+#ARG MIRROR=package-server.untangle.int
+ARG DISTRIBUTION=16.2.2
+#ARG DISTRIBUTION=current
+
+# add extra source
+RUN echo deb http://${MIRROR}/public/buster ${DISTRIBUTION} main non-free > /etc/apt/sources.list.d/ats.list
+RUN apt update -q
+
+# install UVM
+RUN DEBIAN_FRONTEND=noninteractive apt upgrade --yes
+RUN DEBIAN_FRONTEND=noninteractive apt install --yes untangle-gateway
+
+# # FIXME: this is only in 16.3.0 right now, but not in 16.2.x
+# COPY assets/conftest.py /usr/lib/python3/dist-packages/tests/
+
+# # FIXME: this is only in 16.3.0 right now, but not in 16.2.x
+# RUN perl -i -pe 's/--remove-destination//' /usr/bin/sync-settings
+
+# "complete" the setup wizard
+COPY assets/wizard.js /usr/share/untangle/conf/
+
+ENV SRC=/opt/untangle/ngfw_src
+RUN mkdir -p ${SRC}
+VOLUME ${SRC}
+
+WORKDIR ${SRC}
+
+EXPOSE 443
