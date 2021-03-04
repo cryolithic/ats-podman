@@ -60,6 +60,7 @@ podman run -it --rm \
 	   --sysctl net.ipv6.conf.all.disable_ipv6=1 \
 	   --cap-add CAP_NET_RAW \
 	   --cap-add CAP_NET_ADMIN \
+	   --cap-add CAP_SYS_RESOURCE \
 	   --device /dev/net/tun \
 	   --dns=none \
 	   --no-hosts \
