@@ -136,7 +136,7 @@ Here's an example of an Allure report:
 
 ## Flaky tests
 
-Those are failing in a the containerized environment, but not in the
+Those are failing in the containerized environment, but not in the
 official QA infrastructure:
 
 - AdBlockerTests::test_023_eventlog_blockedAd
