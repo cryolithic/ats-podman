@@ -1,7 +1,5 @@
 #! /bin/bash
 
-set -e
-
 # constants (FIXME: common.sh)
 TS=$(date +"%Y%m%dT%H%M")
 NGFW_CONTAINER_BASE=ats-ngfw
@@ -13,10 +11,11 @@ ALLURE_CONTAINER_VOLUME=/allure
 INHERITED_TESTS="not BaseTests"
 
 # FIXME: this list should eventually be empty
-# - network/test_020_port_forward_80: takes *forever*
-# - network/test_07*_ftp_modes: same
-# - vb/test_009_bdamserverIsRunning: "Trying to download the updates from http://bd.untangle.com/av64bit [...] ERROR: [...] Connection timeout (FFFFF7C4)
-BAD_TESTS="not test_020_port_forward_80 and not _ftp_modes_ and not test_009_bdamserverIsRunning"
+# - network: test_020_port_forward_80: takes *forever*
+# - network: test_07*_ftp_modes: same
+# - vb: test_009_bdamserverIsRunning: "Trying to download the updates from http://bd.untangle.com/av64bit [...] ERROR: [...] Connection timeout (FFFFF7C4)
+# - vb & phish: test_009_clamdIsRunning: takes *forever*
+BAD_TESTS="not test_020_port_forward_80 and not _ftp_modes_ and not test_009_bdamserverIsRunning and not test_009_clamdIsRunning"
 
 ## main
 
@@ -35,7 +34,7 @@ VERSION=$(echo ${IMAGE} | perl -pe 's/.*?:([\d.]+)-?.*/$1/')
 VERSION_TS=$(echo $IMAGE | sed -e 's/.*:// ; s/\./-/g')
 NGFW_CONTAINER=${NGFW_CONTAINER_BASE}-$VERSION_TS
 CLIENT_CONTAINER=${CLIENT_CONTAINER_BASE}-$VERSION_TS
-JUNIT_LOCAL_VOLUME=./junit-${VERSION}
+JUNIT_LOCAL_VOLUME=./junit-$VERSION_TS
 ALLURE_LOCAL_VOLUME=./allure/${VERSION}/${TS}
 
 # client IP
