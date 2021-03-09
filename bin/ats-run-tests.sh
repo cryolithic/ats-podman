@@ -59,6 +59,6 @@ podman run -it --rm \
            -v ${ALLURE_LOCAL_VOLUME}:${ALLURE_CONTAINER_VOLUME} \
 	   -v ${JUNIT_LOCAL_VOLUME}:${JUNIT_CONTAINER_VOLUME} \
             ${ALLURE_IMAGE} \
-            generate $ALLURE_CONTAINER_VOLUME -o $ALLURE_CONTAINER_VOLUME --clean
+            generate $JUNIT_CONTAINER_VOLUME -o $ALLURE_CONTAINER_VOLUME --clean
 
 echo "Your report is in $ALLURE_LOCAL_VOLUME"
