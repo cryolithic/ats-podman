@@ -30,7 +30,7 @@ IMAGE=$1
 CLIENT_IP=$2
 
 # extract version
-VERSION=${IMAGE/*-}
+VERSION=$(echo ${IMAGE} | perl -pe 's/.*?:([\d.]+)-?.*/$1/')
 [ -n "$VERSION" ] || VERSION=0
 VERSION_TS=$(echo $IMAGE | sed -e 's/.*:// ; s/\./-/g')
 NGFW_CONTAINER=${NGFW_CONTAINER_BASE}-$VERSION_TS

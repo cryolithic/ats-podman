@@ -12,7 +12,7 @@ DISTRIBUTION=$1
 IMAGE=$2
 
 # extract version
-VERSION=${IMAGE/*-}
+VERSION=$(echo ${IMAGE} | perl -pe 's/.*?:([\d.]+)-?.*/$1/')
 
 # FIXME: CLI switch for pull vs. build
 #podman build --rm -f Dockerfile.ats-client-buster -t untangleinc/ngfw-ats:client-buster .
