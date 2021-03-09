@@ -149,7 +149,6 @@ official QA infrastructure:
 - BandwidthControlTests::test_050_severely_limited_web_filter_flagged
 - BandwidthControlTests::test_060_host_quota
 - BandwidthControlTests::test_061_user_quota
-- CaptivePortalTests::test_070_login_redirect_using_hostname
 - ConfigurationBackupTests::test_020_backupNow
 - ConfigurationBackupTests::test_140_compare_cloud_backup
 - FirewallTests::test_051_intfDst
