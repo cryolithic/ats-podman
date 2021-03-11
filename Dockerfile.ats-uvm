@@ -6,19 +6,14 @@ ARG MIRROR=updates.untangle.com
 ARG DISTRIBUTION=16.2.2
 #ARG DISTRIBUTION=current
 
-# add extra source
-RUN echo deb http://${MIRROR}/public/buster ${DISTRIBUTION} main non-free > /etc/apt/sources.list.d/ats.list
+# add extra source (could be different from the one used in uvm-base
+RUN echo deb http://foo:foo@${MIRROR}/public/buster ${DISTRIBUTION} main non-free > /etc/apt/sources.list.d/untangle-ats-${DISTRIBUTION}.list
 RUN apt update -q
+RUN apt dist-upgrade -y
 
 # install UVM
 RUN DEBIAN_FRONTEND=noninteractive apt upgrade --yes
 RUN DEBIAN_FRONTEND=noninteractive apt install --yes untangle-gateway
-
-# # FIXME: this is only in 16.3.0 right now, but not in 16.2.x
-# COPY assets/conftest.py /usr/lib/python3/dist-packages/tests/
-
-# # FIXME: this is only in 16.3.0 right now, but not in 16.2.x
-# RUN perl -i -pe 's/--remove-destination//' /usr/bin/sync-settings
 
 # "complete" the setup wizard
 COPY assets/wizard.js /usr/share/untangle/conf/

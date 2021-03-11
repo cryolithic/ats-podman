@@ -13,11 +13,10 @@ RUN echo 'APT::Install-Recommends "false";' > /etc/apt/apt.conf.d/no-recommends 
     echo 'APT::Install-Suggests "false";' >> /etc/apt/apt.conf.d/no-recommends
 
 RUN apt update -q
-RUN apt dist-upgrade -y
 
 # Untangle sources
 RUN apt install -y gnupg dirmngr
-RUN echo "deb http://foo:foo@${MIRROR}/public/buster ${DISTRIBUTION} main non-free" > /etc/apt/sources.list.d/${DISTRIBUTION}.list
+RUN echo deb http://foo:foo@${MIRROR}/public/buster ${DISTRIBUTION} main non-free > /etc/apt/sources.list.d/untangle-${DISTRIBUTION}.list
 RUN apt-key adv --keyserver keyserver.ubuntu.com --recv-keys 735A9E18E8F62EDF413592460B9D6AE3627BF103
 
 # install dependencies
