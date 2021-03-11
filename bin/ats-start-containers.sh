@@ -44,12 +44,13 @@ echo "done"
 # create the networks
 echo -n "creating podman networks: "
 for net in $EXTERNAL_NET $INTERNAL_NET ; do
+  echo -n "$net "
   podman network inspect $net > /dev/null 2>&1 || podman network create $net > /dev/null
 done
-echo done
+echo
 
 # run the NGFW container
-echo -n "starting container ${NGFW_CONTAINER}: "
+echo -n "starting NGFW container: "
 rm -fr ${JUNIT_LOCAL_VOLUME}
 mkdir -p ${JUNIT_LOCAL_VOLUME}
 podman run -it --rm \
@@ -65,11 +66,12 @@ podman run -it --rm \
 	   --dns=none \
 	   --no-hosts \
 	   --network ${EXTERNAL_NET},${INTERNAL_NET} \
+	   -h $NGFW_CONTAINER \
 	   --volume ${JUNIT_LOCAL_VOLUME}:${JUNIT_CONTAINER_VOLUME} \
 	   -d \
 	   --name $NGFW_CONTAINER \
 	   $IMAGE > /dev/null
-echo done
+echo ${NGFW_CONTAINER}
 
 # set sysctls that podman can't handle itself. The values are taken
 # from /usr/bin/uvm
@@ -104,7 +106,7 @@ ts=$(date +"%m%%2F%d%%2F%Y")
 curl --fail "https://license.untangle.com/api/licenseAPI.php?action=addLicense&uid=${uid}&sku=${SKU_MONTH}&libitem=untangle-libitem-&start=${ts}&end=&notes=on-demand+ATS+${VERSION}"
 
 # run the client
-echo -n "starting container ${CLIENT_CONTAINER}: "
+echo -n "starting ATS client container: "
 podman run -it --rm \
            --cap-add CAP_NET_RAW \
 	   --cap-add CAP_NET_ADMIN \
@@ -115,7 +117,7 @@ podman run -it --rm \
 	   -d \
 	   --name $CLIENT_CONTAINER \
 	   untangleinc/ngfw-ats:client-buster > /dev/null
-echo "done"
+echo ${CLIENT_CONTAINER}
 
 # get the IP address it was assigned by the NGFW container through DHCP
 echo -n "waiting for ATS client to get a DHCP lease from NGFW: "
@@ -127,7 +129,7 @@ while true ; do
   echo -n "."
   sleep 1
 done
-echo " done (${client_ip})"
+echo " ${client_ip}"
 
 # unload all apps
 echo -n "waiting for full UVM startup before unloading apps: "

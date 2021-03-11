@@ -34,23 +34,27 @@ uid=$(podman exec ${NGFW_CONTAINER} cat /usr/share/untangle/conf/uid 2> /dev/nul
 echo -n "stopping containers: "
 for container in $CLIENT_CONTAINER $NGFW_CONTAINER ; do
   if podman inspect $container > /dev/null 2>&1 ; then
+    echo -n "$container "
     podman stop $container > /dev/null
   fi
 done
-echo "done"
+echo
 
 # remove networks
 echo -n "stopping networks: "
 for network in $INTERNAL_NET $EXTERNAL_NET ; do
   if podman network inspect $network > /dev/null 2>&1 ; then
+    echo -n "$network "
     podman network rm $network > /dev/null
   fi
 done
-echo done
+echo
 
 # revoke license
 echo -n "revoking license: "
 if [ -n "$uid" ] ; then
+  echo -n "$uid "
   curl --fail "https://license.untangle.com/api/licenseAPI.php?action=revokeLicense&uid=${uid}&sku=${SKU_MONTH}&libitem=untangle-libitem-"
 fi
-echo done
+echo
+
