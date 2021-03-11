@@ -88,13 +88,13 @@ echo "done"
 network_config=$(mktemp /tmp/network-config-static-XXXXXXXX.js)
 ${BIN_DIR}/generate-static-network-config.py $NGFW_CONTAINER $EXTERNAL_NET > $network_config
 
-echo -n "waiting for UVM startup before injecting network settings: "
+echo -n "injecting UVM network settings: "
 while ! podman cp $network_config ${NGFW_CONTAINER}:${NGFW_NETWORK_SETTINGS} 2> /dev/null ; do
   echo -n "."
   sleep 1
 done
 rm $network_config
-podman exec -it ${NGFW_CONTAINER} /etc/init.d/untangle-vm restart > /dev/null
+podman exec -it ${NGFW_CONTAINER} systemctl restart untangle-vm > /dev/null
 echo " done"
 
 # get MONTH license
@@ -102,7 +102,6 @@ echo -n "assigning license: "
 uid=$(podman exec ${NGFW_CONTAINER} cat /usr/share/untangle/conf/uid)
 ts=$(date +"%m%%2F%d%%2F%Y")
 curl --fail "https://license.untangle.com/api/licenseAPI.php?action=addLicense&uid=${uid}&sku=${SKU_MONTH}&libitem=untangle-libitem-&start=${ts}&end=&notes=on-demand+ATS+${VERSION}"
-echo " done"
 
 # run the client
 echo -n "starting container ${CLIENT_CONTAINER}: "
@@ -129,3 +128,13 @@ while true ; do
   sleep 1
 done
 echo " done (${client_ip})"
+
+# unload all apps
+echo -n "waiting for full UVM startup before unloading apps: "
+while ! podman exec ${NGFW_CONTAINER} grep -q "untangle-vm launched" /var/log/uvm/wrapper.log 2> /dev/null ; do
+  echo -n "."
+  sleep 1
+done
+podman exec -it ${NGFW_CONTAINER} bash -c 'ucli instances | cut -f 1 | while read id ; do ucli destroy $id ; done' > /dev/null 2> /dev/null
+podman exec -it ${NGFW_CONTAINER} systemctl restart untangle-vm > /dev/null
+echo " done"
