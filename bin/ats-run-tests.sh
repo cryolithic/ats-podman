@@ -48,7 +48,7 @@ podman exec -it \
             $NGFW_CONTAINER \
             pytest-3 -v \
                      --runtests-host=${CLIENT_IP} \
-		     --skip-instantiated=true \
+		     --skip-instantiated=false \
 		     -k "${BAD_TESTS} and ${INHERITED_TESTS}" \
 		     --junitxml ${JUNIT_CONTAINER_VOLUME}/ats.xml \
 		     /usr/lib/python3/dist-packages/tests/
