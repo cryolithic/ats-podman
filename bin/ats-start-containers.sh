@@ -12,7 +12,6 @@ INTERNAL_NET_BASE=internal
 NGFW_NETWORK_SETTINGS=/usr/share/untangle/settings/untangle-vm/network.js
 JUNIT_CONTAINER_VOLUME=/junit
 MANUAL_SYSCTLS="vm.max_map_count=262144 net.ipv4.ip_local_reserved_ports=4500,5432,8009,8123,8484"
-SKU_MONTH=UN-82-PRM-0010-MONTH
 
 ## main
 
@@ -100,10 +99,8 @@ podman exec -it ${NGFW_CONTAINER} systemctl restart untangle-vm > /dev/null
 echo " done"
 
 # get MONTH license
-echo -n "assigning license: "
 uid=$(podman exec ${NGFW_CONTAINER} cat /usr/share/untangle/conf/uid)
-ts=$(date +"%m%%2F%d%%2F%Y")
-curl --fail "https://license.untangle.com/api/licenseAPI.php?action=addLicense&uid=${uid}&sku=${SKU_MONTH}&libitem=untangle-libitem-&start=${ts}&end=&notes=on-demand+ATS+${VERSION}"
+${BIN_DIR}/license-assign.sh $uid
 
 # run the client
 echo -n "starting ATS client container: "

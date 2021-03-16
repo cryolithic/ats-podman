@@ -3,6 +3,8 @@
 set -e
 
 ## constants
+BIN_DIR=$(dirname $(readlink -f $0))
+
 NGFW_CONTAINER_BASE=ats-ngfw
 CLIENT_CONTAINER_BASE=ats-client
 EXTERNAL_NET_BASE=external
@@ -51,10 +53,4 @@ done
 echo
 
 # revoke license
-echo -n "revoking license: "
-if [ -n "$uid" ] ; then
-  echo -n "$uid "
-  curl --fail "https://license.untangle.com/api/licenseAPI.php?action=revokeLicense&uid=${uid}&sku=${SKU_MONTH}&libitem=untangle-libitem-"
-fi
-echo
-
+${BIN_DIR}/license-revoke.sh "$uid"
