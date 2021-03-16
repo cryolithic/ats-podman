@@ -52,6 +52,18 @@ podman exec -it \
 		     $@ \
 		     /usr/lib/python3/dist-packages/tests/
 
+# FIXME: ideally this should be included directly in the junit XML,
+# but the version of pytest in buster is too old for that
+cat <<EOF > $JUNIT_LOCAL_VOLUME/environment.properties
+uvm_version=$(podman exec $NGFW_CONTAINER dpkg-query -Wf '${Version}\n' untangle-vm)
+time=$(date -Iseconds)
+host=$(hostname -s)
+ngfw_container=${NGFW_CONTAINER}
+client_container=${CLIENT_CONTAINER}
+uid=$(podman exec ${NGFW_CONTAINER} cat /usr/share/untangle/conf/uid)
+podman_version=$(dpkg-query -Wf '${Version}\n' podman)
+EOF
+
 # run Allure
 mkdir -p $ALLURE_LOCAL_VOLUME
 podman run -it --rm \
