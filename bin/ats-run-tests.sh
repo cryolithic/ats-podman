@@ -21,12 +21,12 @@ BAD_TESTS="not test_020_port_forward_80 and not _ftp_modes_ and not test_009_bda
 
 # CLI parameters
 if [ $# -lt 1 ] ; then
-  echo "Usage: $0 <image> [<client_ip>]"
+  echo "Usage: $0 <image> [extra pytest args]"
   exit 1
 fi
 
 IMAGE=$1
-CLIENT_IP=$2
+shift
 
 # extract version
 VERSION=$(echo ${IMAGE} | perl -pe 's/.*?:([\d.]+)-?.*/$1/')
@@ -38,9 +38,7 @@ JUNIT_LOCAL_VOLUME=./junit-$VERSION_TS
 ALLURE_LOCAL_VOLUME=./allure/${VERSION}/${TS}
 
 # client IP
-if [ -z "$CLIENT_IP" ] ; then
-  CLIENT_IP=$(podman exec $CLIENT_CONTAINER ip -4 ad show dev eth0 | awk '/inet/ { gsub(/\/.*/, "", $2) ; print $2 }')
-fi
+CLIENT_IP=$(podman exec $CLIENT_CONTAINER ip -4 ad show dev eth0 | awk '/inet/ { gsub(/\/.*/, "", $2) ; print $2 }')
 
 # run ATS
 podman exec -it \
@@ -51,6 +49,7 @@ podman exec -it \
 		     --skip-instantiated=false \
 		     -k "${BAD_TESTS} and ${INHERITED_TESTS}" \
 		     --junitxml ${JUNIT_CONTAINER_VOLUME}/ats.xml \
+		     $@ \
 		     /usr/lib/python3/dist-packages/tests/
 
 # run Allure
