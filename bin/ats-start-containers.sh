@@ -1,6 +1,6 @@
 #! /bin/bash
 
-set -e
+set -eE
 
 ## constants
 BIN_DIR=$(dirname $(readlink -f $0))
@@ -22,6 +22,18 @@ if [ $# != 1 ] ; then
 fi
 
 IMAGE=$1
+
+# cleanup on error
+on_err() {
+  echo
+  echo
+  echo "FAILURE: now cleaning up with ${BIN_DIR}/ats-stop-containers.sh"
+  echo
+  ${BIN_DIR}/ats-stop-containers.sh $IMAGE
+  echo
+  echo "Please re-run $0"
+}
+trap on_err ERR
 
 # extract version
 VERSION=$(echo ${IMAGE} | perl -pe 's/.*?:([\d.]+)-?.*/$1/')
