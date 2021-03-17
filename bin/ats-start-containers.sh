@@ -110,9 +110,9 @@ rm $network_config
 podman exec -it ${NGFW_CONTAINER} systemctl restart untangle-vm > /dev/null
 echo " done"
 
-# get MONTH license
-uid=$(podman exec ${NGFW_CONTAINER} cat /usr/share/untangle/conf/uid)
-${BIN_DIR}/license-assign.sh $uid
+# # get MONTH license
+# uid=$(podman exec ${NGFW_CONTAINER} cat /usr/share/untangle/conf/uid)
+# ${BIN_DIR}/license-assign.sh $uid
 
 # run the client
 echo -n "starting ATS client container: "

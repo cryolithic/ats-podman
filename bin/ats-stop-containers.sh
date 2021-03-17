@@ -52,5 +52,5 @@ for network in $INTERNAL_NET $EXTERNAL_NET ; do
 done
 echo
 
-# revoke license
-${BIN_DIR}/license-revoke.sh "$uid"
+# # revoke license
+# ${BIN_DIR}/license-revoke.sh "$uid"
