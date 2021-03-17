@@ -27,6 +27,10 @@ Starting from a vanilla Buster install, running a vanilla Debian kernel:
 $ ./bin/buster-host-setup.sh
 ```
 
+This step only needs to be run once for each host/worker: after this
+initial run, your host will be setup for good and you only have to deal
+with creating/starting/stopping images.
+
 ### Create images
 
 Use `bin/ats-build-containers.sh`:
