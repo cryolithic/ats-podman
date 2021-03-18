@@ -140,12 +140,9 @@ while true ; do
 done
 echo " ${client_ip}"
 
-# unload all apps
-echo -n "waiting for full UVM startup before unloading apps: "
+echo -n "waiting for full UVM startup: "
 while ! podman exec ${NGFW_CONTAINER} grep -q "untangle-vm launched" /var/log/uvm/wrapper.log 2> /dev/null ; do
   echo -n "."
   sleep 1
 done
-podman exec -it ${NGFW_CONTAINER} bash -c 'ucli instances | cut -f 1 | while read id ; do ucli destroy $id ; done' > /dev/null 2> /dev/null
-podman exec -it ${NGFW_CONTAINER} systemctl restart untangle-vm > /dev/null
 echo " done"
