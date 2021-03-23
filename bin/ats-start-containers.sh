@@ -107,7 +107,7 @@ while ! podman cp $network_config ${NGFW_CONTAINER}:${NGFW_NETWORK_SETTINGS} 2> 
   sleep 1
 done
 rm $network_config
-podman exec -it ${NGFW_CONTAINER} systemctl restart untangle-vm > /dev/null
+podman exec ${NGFW_CONTAINER} systemctl restart untangle-vm > /dev/null
 echo " done"
 
 # # get MONTH license
