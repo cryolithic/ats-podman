@@ -19,7 +19,8 @@ VERSION=$(echo ${IMAGE} | perl -pe 's/.*?:([\d.]+)-?.*/$1/')
 podman pull untangleinc/ngfw-ats:client-buster
 
 # FIXME: more CLI args (mirror, no-cache, etc)
-podman build --no-cache --rm -f Dockerfile.ats-uvm-base --build-arg MIRROR=package-server.untangle.int --build-arg DISTRIBUTION=$DISTRIBUTION -t untangleinc/ngfw-ats:uvm-base .
+podman pull untangleinc/ngfw-ats:uvm-base-${DISTRIBUTION} || \
+podman build --no-cache --rm -f Dockerfile.ats-uvm-base --build-arg MIRROR=package-server.untangle.int --build-arg DISTRIBUTION=$DISTRIBUTION -t untangleinc/ngfw-ats:uvm-base-${DISTRIBUTION} .
 
 # FIXME: more CLI args (mirror, no-cache, etc)
 podman build --no-cache --rm -f Dockerfile.ats-uvm --build-arg MIRROR=package-server.untangle.int --build-arg DISTRIBUTION=$DISTRIBUTION -t $IMAGE .
