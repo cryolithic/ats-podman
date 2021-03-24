@@ -145,4 +145,8 @@ while ! podman exec ${NGFW_CONTAINER} grep -q "untangle-vm launched" /var/log/uv
   echo -n "."
   sleep 1
 done
+while ! podman exec ${NGFW_CONTAINER} ucli instances > /dev/null 2>&1 ; do
+  echo -n "."
+  sleep 1
+done
 echo " done"
