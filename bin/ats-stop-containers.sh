@@ -22,12 +22,12 @@ IMAGE=$1
 
 # extract version
 VERSION=$(echo ${IMAGE} | perl -pe 's/.*?:([\d.]+)-?.*/$1/')
-[ -n "$VERSION" ] || VERSION=0
-VERSION_TS=$(echo $IMAGE | sed -e 's/.*:// ; s/\./-/g')
-NGFW_CONTAINER=${NGFW_CONTAINER_BASE}-$VERSION_TS
-CLIENT_CONTAINER=${CLIENT_CONTAINER_BASE}-$VERSION_TS
-EXTERNAL_NET=${EXTERNAL_NET_BASE}-$VERSION_TS
-INTERNAL_NET=${INTERNAL_NET_BASE}-$VERSION_TS
+[ -n "$VERSION" ] || VERSION=0.0.0
+TS=$(echo $IMAGE | sed -e 's/.*-//')
+NGFW_CONTAINER=${NGFW_CONTAINER_BASE}-${VERSION}-$TS
+CLIENT_CONTAINER=${CLIENT_CONTAINER_BASE}-${VERSION}-$TS
+EXTERNAL_NET=${EXTERNAL_NET_BASE}-${VERSION}-$TS
+INTERNAL_NET=${INTERNAL_NET_BASE}-${VERSION}-$TS
 
 # get UID
 uid=$(podman exec ${NGFW_CONTAINER} cat /usr/share/untangle/conf/uid 2> /dev/null || true)
@@ -47,7 +47,7 @@ echo -n "stopping networks: "
 for network in $INTERNAL_NET $EXTERNAL_NET ; do
   if podman network inspect $network > /dev/null 2>&1 ; then
     echo -n "$network "
-    podman network rm $network > /dev/null
+    podman network rm -f $network > /dev/null
   fi
 done
 echo

@@ -37,13 +37,13 @@ trap on_err ERR
 
 # extract version
 VERSION=$(echo ${IMAGE} | perl -pe 's/.*?:([\d.]+)-?.*/$1/')
-[ -n "$VERSION" ] || VERSION=0
-VERSION_TS=$(echo $IMAGE | sed -e 's/.*:// ; s/\./-/g')
-NGFW_CONTAINER=${NGFW_CONTAINER_BASE}-$VERSION_TS
-CLIENT_CONTAINER=${CLIENT_CONTAINER_BASE}-$VERSION_TS
-EXTERNAL_NET=${EXTERNAL_NET_BASE}-$VERSION_TS
-INTERNAL_NET=${INTERNAL_NET_BASE}-$VERSION_TS
-JUNIT_LOCAL_VOLUME=./junit-$VERSION_TS
+[ -n "$VERSION" ] || VERSION=0.0.0
+TS=$(echo $IMAGE | sed -e 's/.*-//')
+NGFW_CONTAINER=${NGFW_CONTAINER_BASE}-${VERSION}-$TS
+CLIENT_CONTAINER=${CLIENT_CONTAINER_BASE}-${VERSION}-$TS
+EXTERNAL_NET=${EXTERNAL_NET_BASE}-${VERSION}-$TS
+INTERNAL_NET=${INTERNAL_NET_BASE}-${VERSION}-$TS
+JUNIT_LOCAL_VOLUME=./junit/${VERSION}/${TS/t/T}
 
 # load modules
 echo -n "loading required kernel modules: "
@@ -77,7 +77,7 @@ podman run -it --rm \
 	   --dns=none \
 	   --no-hosts \
 	   --network ${EXTERNAL_NET},${INTERNAL_NET} \
-	   -h $NGFW_CONTAINER \
+	   --hostname ${NGFW_CONTAINER//./-} \
 	   --volume ${JUNIT_LOCAL_VOLUME}:${JUNIT_CONTAINER_VOLUME} \
 	   -d \
 	   --name $NGFW_CONTAINER \
@@ -122,7 +122,7 @@ podman run -it --rm \
 	   --dns=none \
 	   --no-hosts \
 	   --network $INTERNAL_NET \
-	   -h $CLIENT_CONTAINER \
+	   --hostname ${CLIENT_CONTAINER//./-} \
 	   -d \
 	   --name $CLIENT_CONTAINER \
 	   untangleinc/ngfw-ats:client-buster > /dev/null

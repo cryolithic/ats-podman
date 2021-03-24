@@ -1,7 +1,6 @@
 #! /bin/bash
 
 # constants (FIXME: common.sh)
-TS=$(date +"%Y%m%dT%H%M")
 NGFW_CONTAINER_BASE=ats-ngfw
 CLIENT_CONTAINER_BASE=ats-client
 JUNIT_CONTAINER_VOLUME=/junit
@@ -30,12 +29,12 @@ shift
 
 # extract version
 VERSION=$(echo ${IMAGE} | perl -pe 's/.*?:([\d.]+)-?.*/$1/')
-[ -n "$VERSION" ] || VERSION=0
-VERSION_TS=$(echo $IMAGE | sed -e 's/.*:// ; s/\./-/g')
-NGFW_CONTAINER=${NGFW_CONTAINER_BASE}-$VERSION_TS
-CLIENT_CONTAINER=${CLIENT_CONTAINER_BASE}-$VERSION_TS
-JUNIT_LOCAL_VOLUME=./junit-$VERSION_TS
-ALLURE_LOCAL_VOLUME=./allure/${VERSION}/${TS}
+[ -n "$VERSION" ] || VERSION=0.0.0
+TS=$(echo $IMAGE | sed -e 's/.*-//')
+NGFW_CONTAINER=${NGFW_CONTAINER_BASE}-${VERSION}-$TS
+CLIENT_CONTAINER=${CLIENT_CONTAINER_BASE}-${VERSION}-$TS
+JUNIT_LOCAL_VOLUME=./junit/${VERSION}/${TS/t/T}
+ALLURE_LOCAL_VOLUME=./allure/${VERSION}/${TS/t/T}
 
 # client IP
 CLIENT_IP=$(podman exec $CLIENT_CONTAINER ip -4 ad show dev eth0 | awk '/inet/ { gsub(/\/.*/, "", $2) ; print $2 }')
