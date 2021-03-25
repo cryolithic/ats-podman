@@ -2,3 +2,4 @@ tmp
 results
 *.deb
 allure
+junit
