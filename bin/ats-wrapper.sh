@@ -26,7 +26,7 @@ ALLURE_LOCAL_VOLUME=./allure/${VERSION}/$TS_ISO
 
 ${BIN_DIR}/ats-build-containers.sh $DISTRIBUTION $IMAGE
 ${BIN_DIR}/ats-start-containers.sh $IMAGE
-${BIN_DIR}/ats-run-tests.sh $IMAGE
+${BIN_DIR}/ats-run-tests.sh $IMAGE -m "not failure_in_podman"
 ${BIN_DIR}/ats-stop-containers.sh $IMAGE
 
 scp -i ~${USER}/.ssh/id_rsa -r $ALLURE_LOCAL_VOLUME ${REPORTS_USER}@${REPORTS_HOST}:${REPORTS_BASEDIR}/${VERSION}/
