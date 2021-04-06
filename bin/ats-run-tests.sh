@@ -7,14 +7,8 @@ JUNIT_CONTAINER_VOLUME=/junit
 ALLURE_IMAGE=untangleinc/ngfw-ats:allure
 ALLURE_CONTAINER_VOLUME=/allure
 
-INHERITED_TESTS="not BaseTests"
-
-# FIXME: this list should eventually be empty
-# - network: test_020_port_forward_80: takes *forever*
-# - network: test_07*_ftp_modes: same
-# - vb: test_009_bdamserverIsRunning: "Trying to download the updates from http://bd.untangle.com/av64bit [...] ERROR: [...] Connection timeout (FFFFF7C4)
-# - vb & phish: test_009_clamdIsRunning: takes *forever*
-BAD_TESTS="not test_020_port_forward_80 and not _ftp_modes_ and not test_009_bdamserverIsRunning and not test_009_clamdIsRunning"
+EXCLUDE_INHERITED_TESTS="not BaseTests"
+EXCLUDE_BAD_TESTS="not this_test_does_not_exist"
 
 ## main
 
@@ -46,9 +40,9 @@ podman exec -it \
             pytest-3 -v \
                      --runtests-host=${CLIENT_IP} \
 		     --skip-instantiated=false \
-		     -k "${BAD_TESTS} and ${INHERITED_TESTS}" \
+		     -k "${EXCLUDE_BAD_TESTS} and ${EXCLUDE_INHERITED_TESTS}" \
 		     --junitxml ${JUNIT_CONTAINER_VOLUME}/ats.xml \
-		     $@ \
+		     "$@" \
 		     /usr/lib/python3/dist-packages/tests/
 
 # FIXME: ideally this should be included directly in the junit XML,
