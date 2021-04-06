@@ -20,6 +20,7 @@ fi
 
 IMAGE=$1
 shift
+PYTEST_ARGS=("$@")
 
 # extract version
 VERSION=$(echo ${IMAGE} | perl -pe 's/.*?:([\d.]+)-?.*/$1/')
@@ -40,15 +41,16 @@ podman exec -it \
             pytest-3 -v \
                      --runtests-host=${CLIENT_IP} \
 		     --skip-instantiated=false \
-		     -k "${EXCLUDE_BAD_TESTS} and ${EXCLUDE_INHERITED_TESTS}" \
 		     --junitxml ${JUNIT_CONTAINER_VOLUME}/ats.xml \
-		     "$@" \
+		     -k "${EXCLUDE_BAD_TESTS} and ${EXCLUDE_INHERITED_TESTS}" \
+		     "${PYTEST_ARGS[@]}" \
 		     /usr/lib/python3/dist-packages/tests/
 
 # FIXME: ideally this should be included directly in the junit XML,
 # but the version of pytest in buster is too old for that
 cat <<EOF > $JUNIT_LOCAL_VOLUME/environment.properties
 uvm_version=$(podman exec $NGFW_CONTAINER dpkg-query -Wf '${Version}\n' untangle-vm)
+pytest_args=$(printf "'%s' " "${PYTEST_ARGS[@]}")
 time=$(date -Iseconds)
 host=$(hostname -s)
 ngfw_container=${NGFW_CONTAINER}
