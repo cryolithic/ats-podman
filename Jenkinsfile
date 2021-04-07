@@ -1,5 +1,9 @@
+void run_ats(version, distribution) {
+  sh "sudo ./bin/ats-wrapper.sh ${version} ${distribution}"
+}
+
 pipeline {
-  agent { label 'podman' }
+  agent none
 
   parameters {
     string(name:'version', defaultValue:'16.3.0', description:'target version')
@@ -13,8 +17,9 @@ pipeline {
   stages {
 
     stage('Update subtrees') {
+      agent { label 'podman' }
       steps {
-	sh "sudo ./bin/ats-wrapper.sh ${version} ${distribution}"
+        run_ats(version, distribution)
       }
 
       post {
