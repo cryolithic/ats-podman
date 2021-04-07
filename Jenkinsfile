@@ -1,5 +1,5 @@
-void run_ats(version, distribution) {
-  sh "sudo ./bin/ats-wrapper.sh ${version} ${distribution}"
+void run_ats(distribution, version) {
+  sh "sudo ./bin/ats-wrapper.sh ${distribution} ${version}"
 }
 
 pipeline {
@@ -19,7 +19,7 @@ pipeline {
     stage('Run ATS') {
       agent { label 'podman' }
       steps {
-        run_ats(version, distribution)
+        run_ats(distribution, version)
       }
 
       post {

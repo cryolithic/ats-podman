@@ -14,12 +14,12 @@ TS_ISO=${TS/t/T}
 
 # CLI parameters
 if [ $# != 2 ] ; then
-  echo "Usage: $0 <version> <distribution>"
+  echo "Usage: $0 <distribution> <version>"
   exit 1
 fi
 
-VERSION=$1
-DISTRIBUTION=$2
+DISTRIBUTION=$1
+VERSION=$2
 
 IMAGE=ngfw:${VERSION}-${TS}
 ALLURE_LOCAL_VOLUME=./allure/${VERSION}/$TS_ISO
