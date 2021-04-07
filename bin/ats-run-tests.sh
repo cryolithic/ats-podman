@@ -51,9 +51,10 @@ podman exec -it \
 cat <<EOF > $JUNIT_LOCAL_VOLUME/environment.properties
 uvm_version=$(podman exec $NGFW_CONTAINER dpkg-query -Wf '${Version}\n' untangle-vm)
 pytest_args=$(printf "'%s' " "${PYTEST_ARGS[@]}")
-time=$(date -Iseconds)
 host=$(hostname -s)
+ip=$(curl ifconfig.co)
 ngfw_container=${NGFW_CONTAINER}
+time=$(date -Iseconds)
 client_container=${CLIENT_CONTAINER}
 uid=$(podman exec ${NGFW_CONTAINER} cat /usr/share/untangle/conf/uid)
 podman_version=$(dpkg-query -Wf '${Version}\n' podman)
