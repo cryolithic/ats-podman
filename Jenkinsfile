@@ -16,7 +16,7 @@ pipeline {
 
   stages {
 
-    stage('Update subtrees') {
+    stage('Run ATS') {
       agent { label 'podman' }
       steps {
         run_ats(version, distribution)
