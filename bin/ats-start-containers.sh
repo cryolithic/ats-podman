@@ -4,6 +4,7 @@ set -eE
 
 ## constants
 BIN_DIR=$(dirname $(readlink -f $0))
+export PATH=/sbin:/usr/sbin:$PATH
 
 NGFW_CONTAINER_BASE=ats-ngfw
 CLIENT_CONTAINER_BASE=ats-client
@@ -48,7 +49,7 @@ JUNIT_LOCAL_VOLUME=./junit/${VERSION}/${TS/t/T}
 # load modules
 echo -n "loading required kernel modules: "
 find /lib/modules/*-untangle-amd64 -iregex '.*/\(ip6t\|ipt\|ebtables\|nf\|xt_\|connt\|wg\).*\.ko' | while read f ; do
-  /sbin/modprobe $(basename $f | sed -e 's/.ko//')
+  modprobe $(basename $f | sed -e 's/.ko//')
 done
 echo "done"
 
