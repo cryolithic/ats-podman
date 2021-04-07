@@ -32,10 +32,10 @@ JUNIT_LOCAL_VOLUME=./junit/${VERSION}/${TS/t/T}
 ALLURE_LOCAL_VOLUME=./allure/${VERSION}/${TS/t/T}
 
 # client IP
-CLIENT_IP=$(podman exec $CLIENT_CONTAINER ip -4 ad show dev eth0 | awk '/inet/ { gsub(/\/.*/, "", $2) ; print $2 }')
+CLIENT_IP=$(podman --cgroup-manager=cgroupfs exec $CLIENT_CONTAINER ip -4 ad show dev eth0 | awk '/inet/ { gsub(/\/.*/, "", $2) ; print $2 }')
 
 # run ATS
-podman exec -it \
+podman --cgroup-manager=cgroupfs exec -it \
             -e PYTHONUNBUFFERED=1 \
             $NGFW_CONTAINER \
             pytest-3 -v \
@@ -49,20 +49,20 @@ podman exec -it \
 # FIXME: ideally this should be included directly in the junit XML,
 # but the version of pytest in buster is too old for that
 cat <<EOF > $JUNIT_LOCAL_VOLUME/environment.properties
-uvm_version=$(podman exec $NGFW_CONTAINER dpkg-query -Wf '${Version}\n' untangle-vm)
+uvm_version=$(podman --cgroup-manager=cgroupfs exec $NGFW_CONTAINER dpkg-query -Wf '${Version}\n' untangle-vm)
 pytest_args=$(printf "'%s' " "${PYTEST_ARGS[@]}")
 host=$(hostname -s)
 ip=$(curl ifconfig.co)
 ngfw_container=${NGFW_CONTAINER}
 time=$(date -Iseconds)
 client_container=${CLIENT_CONTAINER}
-uid=$(podman exec ${NGFW_CONTAINER} cat /usr/share/untangle/conf/uid)
+uid=$(podman --cgroup-manager=cgroupfs exec ${NGFW_CONTAINER} cat /usr/share/untangle/conf/uid)
 podman_version=$(dpkg-query -Wf '${Version}\n' podman)
 EOF
 
 # run Allure
 mkdir -p $ALLURE_LOCAL_VOLUME
-podman run -it --rm \
+podman --cgroup-manager=cgroupfs run -it --rm \
            -v ${ALLURE_LOCAL_VOLUME}:${ALLURE_CONTAINER_VOLUME} \
 	   -v ${JUNIT_LOCAL_VOLUME}:${JUNIT_CONTAINER_VOLUME} \
             ${ALLURE_IMAGE} \

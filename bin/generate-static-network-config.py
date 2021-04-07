@@ -14,7 +14,7 @@ TPL = os.path.join(PRJ_DIR, 'assets/network-static.js.j2')
 
 
 def podman_get_network_config(container_name, network_name):
-    output = subprocess.getoutput(f'podman inspect --format json {container_name}')
+    output = subprocess.getoutput(f'podman --cgroup-manager=cgroupfs inspect --format json {container_name}')
     j = json.loads(output)
     return j[0]['NetworkSettings']['Networks'][network_name]
 

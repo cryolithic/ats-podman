@@ -15,12 +15,12 @@ IMAGE=$2
 VERSION=$(echo ${IMAGE} | perl -pe 's/.*?:([\d.]+)-?.*/$1/')
 
 # FIXME: CLI switch for pull vs. build
-#podman build --rm -f Dockerfile.ats-client-buster -t untangleinc/ngfw-ats:client-buster .
-podman pull untangleinc/ngfw-ats:client-buster
+#podman --cgroup-manager=cgroupfs build --rm -f Dockerfile.ats-client-buster -t untangleinc/ngfw-ats:client-buster .
+podman --cgroup-manager=cgroupfs pull untangleinc/ngfw-ats:client-buster
 
 # FIXME: more CLI args (mirror, no-cache, etc)
-podman pull untangleinc/ngfw-ats:uvm-base-${DISTRIBUTION} || \
-podman build --no-cache --rm -f Dockerfile.ats-uvm-base --build-arg MIRROR=package-server.untangle.int --build-arg DISTRIBUTION=$DISTRIBUTION -t untangleinc/ngfw-ats:uvm-base-${DISTRIBUTION} .
+podman --cgroup-manager=cgroupfs pull untangleinc/ngfw-ats:uvm-base-${DISTRIBUTION} || \
+podman --cgroup-manager=cgroupfs build --no-cache --rm -f Dockerfile.ats-uvm-base --build-arg MIRROR=package-server.untangle.int --build-arg DISTRIBUTION=$DISTRIBUTION -t untangleinc/ngfw-ats:uvm-base-${DISTRIBUTION} .
 
 # FIXME: more CLI args (mirror, no-cache, etc)
-podman build --no-cache --rm -f Dockerfile.ats-uvm --build-arg MIRROR=package-server.untangle.int --build-arg DISTRIBUTION=$DISTRIBUTION -t $IMAGE .
+podman --cgroup-manager=cgroupfs build --no-cache --rm -f Dockerfile.ats-uvm --build-arg MIRROR=package-server.untangle.int --build-arg DISTRIBUTION=$DISTRIBUTION -t $IMAGE .

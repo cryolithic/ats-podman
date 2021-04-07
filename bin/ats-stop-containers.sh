@@ -30,14 +30,14 @@ EXTERNAL_NET=${EXTERNAL_NET_BASE}-${VERSION}-$TS
 INTERNAL_NET=${INTERNAL_NET_BASE}-${VERSION}-$TS
 
 # get UID
-uid=$(podman exec ${NGFW_CONTAINER} cat /usr/share/untangle/conf/uid 2> /dev/null || true)
+uid=$(podman --cgroup-manager=cgroupfs exec ${NGFW_CONTAINER} cat /usr/share/untangle/conf/uid 2> /dev/null || true)
 
 # remove containers
 echo -n "stopping containers: "
 for container in $CLIENT_CONTAINER $NGFW_CONTAINER ; do
-  if podman inspect $container > /dev/null 2>&1 ; then
+  if podman --cgroup-manager=cgroupfs inspect $container > /dev/null 2>&1 ; then
     echo -n "$container "
-    podman stop $container > /dev/null
+    podman --cgroup-manager=cgroupfs stop $container > /dev/null
   fi
 done
 echo
@@ -45,9 +45,9 @@ echo
 # remove networks
 echo -n "stopping networks: "
 for network in $INTERNAL_NET $EXTERNAL_NET ; do
-  if podman network inspect $network > /dev/null 2>&1 ; then
+  if podman --cgroup-manager=cgroupfs network inspect $network > /dev/null 2>&1 ; then
     echo -n "$network "
-    podman network rm -f $network > /dev/null
+    podman --cgroup-manager=cgroupfs network rm -f $network > /dev/null
   fi
 done
 echo
