@@ -48,7 +48,7 @@ JUNIT_LOCAL_VOLUME=./junit/${VERSION}/${TS/t/T}
 # load modules
 echo -n "loading required kernel modules: "
 find /lib/modules/*-untangle-amd64 -iregex '.*/\(ip6t\|ipt\|ebtables\|nf\|xt_\|connt\|wg\).*\.ko' | while read f ; do
-  modprobe $(basename $f | sed -e 's/.ko//')
+  /sbin/modprobe $(basename $f | sed -e 's/.ko//')
 done
 echo "done"
 
