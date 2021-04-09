@@ -1,0 +1,21 @@
+version: '2'
+services:
+  influxdb:
+    image: influxdb:1.8.4
+    restart: unless-stopped
+    volumes:
+      - ./docker-volumes/influxdb:/var/lib/influxdb
+    ports:
+      - "9986:8086"
+
+  grafana:
+    image: grafana/grafana:7.5.2
+    restart: unless-stopped
+    depends_on:
+      - influxdb
+    volumes:
+      - ./docker-volumes/grafana:/var/lib/grafana
+    ports:
+      - "3000:3000"
+    depends_on:
+      - influxdb
