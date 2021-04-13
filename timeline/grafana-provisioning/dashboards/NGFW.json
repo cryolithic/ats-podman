@@ -1,0 +1,815 @@
+{
+  "annotations": {
+    "list": [
+      {
+        "builtIn": 1,
+        "datasource": "-- Grafana --",
+        "enable": true,
+        "hide": true,
+        "iconColor": "rgba(0, 211, 255, 1)",
+        "name": "Annotations & Alerts",
+        "type": "dashboard"
+      }
+    ]
+  },
+  "editable": true,
+  "gnetId": null,
+  "graphTooltip": 0,
+  "id": 1,
+  "iteration": 1618476060202,
+  "links": [],
+  "panels": [
+    {
+      "datasource": "influxdb",
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "axisLabel": "",
+            "axisPlacement": "auto",
+            "barAlignment": 0,
+            "drawStyle": "line",
+            "fillOpacity": 100,
+            "gradientMode": "opacity",
+            "hideFrom": {
+              "graph": false,
+              "legend": false,
+              "tooltip": false
+            },
+            "lineInterpolation": "linear",
+            "lineStyle": {
+              "fill": "solid"
+            },
+            "lineWidth": 1,
+            "pointSize": 5,
+            "scaleDistribution": {
+              "type": "linear"
+            },
+            "showPoints": "never",
+            "spanNulls": true
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          },
+          "unit": "short"
+        },
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Duration in minutes"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "fixedColor": "blue",
+                  "mode": "fixed"
+                }
+              }
+            ]
+          }
+        ]
+      },
+      "gridPos": {
+        "h": 8,
+        "w": 8,
+        "x": 0,
+        "y": 0
+      },
+      "id": 8,
+      "options": {
+        "graph": {},
+        "legend": {
+          "calcs": [
+            "min",
+            "max",
+            "mean",
+            "lastNotNull"
+          ],
+          "displayMode": "table",
+          "placement": "bottom"
+        },
+        "tooltipOptions": {
+          "mode": "single"
+        }
+      },
+      "pluginVersion": "7.5.2",
+      "targets": [
+        {
+          "alias": "Duration in minutes",
+          "groupBy": [
+            {
+              "params": [
+                "$__interval"
+              ],
+              "type": "time"
+            },
+            {
+              "params": [
+                "null"
+              ],
+              "type": "fill"
+            }
+          ],
+          "measurement": "launch_time",
+          "orderByTime": "ASC",
+          "policy": "default",
+          "refId": "A",
+          "resultFormat": "time_series",
+          "select": [
+            [
+              {
+                "params": [
+                  "sum_duration"
+                ],
+                "type": "field"
+              },
+              {
+                "params": [],
+                "type": "mean"
+              },
+              {
+                "params": [
+                  "/60000"
+                ],
+                "type": "math"
+              }
+            ]
+          ],
+          "tags": [
+            {
+              "key": "public_version",
+              "operator": "=~",
+              "value": "/^$public_version$/"
+            },
+            {
+              "condition": "AND",
+              "key": "distributions",
+              "operator": "=~",
+              "value": "/$distribution;/"
+            }
+          ]
+        }
+      ],
+      "title": "Run duration",
+      "type": "timeseries"
+    },
+    {
+      "datasource": "influxdb",
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "axisLabel": "",
+            "axisPlacement": "auto",
+            "barAlignment": 0,
+            "drawStyle": "line",
+            "fillOpacity": 100,
+            "gradientMode": "opacity",
+            "hideFrom": {
+              "graph": false,
+              "legend": false,
+              "tooltip": false
+            },
+            "lineInterpolation": "linear",
+            "lineStyle": {
+              "fill": "solid"
+            },
+            "lineWidth": 1,
+            "pointSize": 5,
+            "scaleDistribution": {
+              "type": "linear"
+            },
+            "showPoints": "never",
+            "spanNulls": false
+          },
+          "decimals": 0,
+          "links": [],
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          },
+          "unit": "short"
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 8,
+        "w": 8,
+        "x": 8,
+        "y": 0
+      },
+      "id": 6,
+      "options": {
+        "graph": {},
+        "legend": {
+          "calcs": [
+            "min",
+            "max",
+            "mean",
+            "lastNotNull"
+          ],
+          "displayMode": "table",
+          "placement": "bottom"
+        },
+        "tooltipOptions": {
+          "mode": "single"
+        }
+      },
+      "pluginVersion": "7.5.2",
+      "targets": [
+        {
+          "alias": "# skipped tests",
+          "groupBy": [],
+          "measurement": "launch_status",
+          "orderByTime": "ASC",
+          "policy": "default",
+          "query": "SELECT mean(\"skipped\") FROM \"launch_status\" WHERE (\"public_version\" =~ /^$public_version$/) AND (\"distributions\" =~ /$distribution;/) AND $timeFilter GROUP BY time($__interval) fill(null)",
+          "rawQuery": false,
+          "refId": "A",
+          "resultFormat": "time_series",
+          "select": [
+            [
+              {
+                "params": [
+                  "skipped"
+                ],
+                "type": "field"
+              }
+            ]
+          ],
+          "tags": [
+            {
+              "key": "public_version",
+              "operator": "=~",
+              "value": "/^$public_version$/"
+            },
+            {
+              "condition": "AND",
+              "key": "distributions",
+              "operator": "=~",
+              "value": "/$distribution;/"
+            }
+          ]
+        }
+      ],
+      "title": "# skipped tests",
+      "type": "timeseries"
+    },
+    {
+      "datasource": "influxdb",
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "axisLabel": "",
+            "axisPlacement": "auto",
+            "barAlignment": 0,
+            "drawStyle": "line",
+            "fillOpacity": 35,
+            "gradientMode": "opacity",
+            "hideFrom": {
+              "graph": false,
+              "legend": false,
+              "tooltip": false
+            },
+            "lineInterpolation": "linear",
+            "lineWidth": 1,
+            "pointSize": 5,
+            "scaleDistribution": {
+              "type": "linear"
+            },
+            "showPoints": "never",
+            "spanNulls": true
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          },
+          "unit": "short"
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 8,
+        "w": 8,
+        "x": 16,
+        "y": 0
+      },
+      "id": 4,
+      "options": {
+        "graph": {},
+        "legend": {
+          "calcs": [
+            "min",
+            "max",
+            "mean",
+            "lastNotNull"
+          ],
+          "displayMode": "table",
+          "placement": "bottom"
+        },
+        "tooltipOptions": {
+          "mode": "single"
+        }
+      },
+      "pluginVersion": "7.5.2",
+      "targets": [
+        {
+          "alias": "Without skipped",
+          "groupBy": [
+            {
+              "params": [
+                "$__interval"
+              ],
+              "type": "time"
+            },
+            {
+              "params": [
+                "null"
+              ],
+              "type": "fill"
+            }
+          ],
+          "measurement": "launch_status",
+          "orderByTime": "ASC",
+          "policy": "default",
+          "query": "SELECT mean(\"ratio\") FROM (SELECT 100*\"passed\"/(\"failed\"+\"passed\") as \"ratio\" FROM \"launch_status\" WHERE (\"public_version\" =~ /^$public_version$/) AND (\"distributions\" =~ /$distribution;/)) WHERE $timeFilter  GROUP BY time($__interval) fill(null)",
+          "rawQuery": true,
+          "refId": "A",
+          "resultFormat": "time_series",
+          "select": [
+            [
+              {
+                "params": [
+                  "failed"
+                ],
+                "type": "field"
+              },
+              {
+                "params": [
+                  " / 100"
+                ],
+                "type": "math"
+              }
+            ]
+          ],
+          "tags": [
+            {
+              "key": "public_version",
+              "operator": "=~",
+              "value": "/^$public_version$/"
+            }
+          ]
+        },
+        {
+          "alias": "With skipped",
+          "groupBy": [
+            {
+              "params": [
+                "$__interval"
+              ],
+              "type": "time"
+            },
+            {
+              "params": [
+                "null"
+              ],
+              "type": "fill"
+            }
+          ],
+          "hide": false,
+          "measurement": "launch_status",
+          "orderByTime": "ASC",
+          "policy": "default",
+          "query": "SELECT mean(\"ratio\") FROM (SELECT 100*\"passed\"/(\"failed\"+\"passed\"+\"skipped\") as \"ratio\" FROM \"launch_status\"  WHERE (\"public_version\" =~ /^$public_version$/) AND (\"distributions\" =~ /$distribution;/)) WHERE $timeFilter  GROUP BY time($__interval) fill(null)",
+          "rawQuery": true,
+          "refId": "B",
+          "resultFormat": "time_series",
+          "select": [
+            [
+              {
+                "params": [
+                  "failed"
+                ],
+                "type": "field"
+              },
+              {
+                "params": [
+                  " / 100"
+                ],
+                "type": "math"
+              }
+            ]
+          ],
+          "tags": [
+            {
+              "key": "public_version",
+              "operator": "=~",
+              "value": "/^$public_version$/"
+            },
+            {
+              "condition": "AND",
+              "key": "distributions",
+              "operator": "=~",
+              "value": "/$distribution;/"
+            }
+          ]
+        }
+      ],
+      "timeFrom": null,
+      "timeShift": null,
+      "title": "Success rate",
+      "type": "timeseries"
+    },
+    {
+      "datasource": "influxdb",
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "axisLabel": "",
+            "axisPlacement": "auto",
+            "barAlignment": 0,
+            "drawStyle": "line",
+            "fillOpacity": 35,
+            "gradientMode": "opacity",
+            "hideFrom": {
+              "graph": false,
+              "legend": false,
+              "tooltip": false
+            },
+            "lineInterpolation": "linear",
+            "lineWidth": 1,
+            "pointSize": 5,
+            "scaleDistribution": {
+              "type": "linear"
+            },
+            "showPoints": "never",
+            "spanNulls": false
+          },
+          "decimals": 0,
+          "links": [
+            {
+              "targetBlank": true,
+              "title": "Allure report",
+              "url": "http://build-it.untangleint.net/ats/by-time/${__value.time}"
+            }
+          ],
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          },
+          "unit": "short"
+        },
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "broken"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "fixedColor": "red",
+                  "mode": "fixed"
+                }
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "failed"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "fixedColor": "yellow",
+                  "mode": "fixed"
+                }
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "passed"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "fixedColor": "green",
+                  "mode": "fixed"
+                }
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "skipped"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "fixedColor": "blue",
+                  "mode": "fixed"
+                }
+              }
+            ]
+          }
+        ]
+      },
+      "gridPos": {
+        "h": 11,
+        "w": 24,
+        "x": 0,
+        "y": 8
+      },
+      "id": 2,
+      "links": [],
+      "options": {
+        "graph": {},
+        "legend": {
+          "calcs": [
+            "mean",
+            "max",
+            "min",
+            "lastNotNull"
+          ],
+          "displayMode": "table",
+          "placement": "bottom"
+        },
+        "tooltipOptions": {
+          "mode": "multi"
+        }
+      },
+      "pluginVersion": "7.5.2",
+      "targets": [
+        {
+          "alias": "broken",
+          "groupBy": [],
+          "measurement": "launch_status",
+          "orderByTime": "ASC",
+          "policy": "default",
+          "query": "SELECT mean(\"broken\") FROM \"launch_status\" WHERE $timeFilter GROUP BY time($__interval) fill(null)",
+          "rawQuery": false,
+          "refId": "A",
+          "resultFormat": "time_series",
+          "select": [
+            [
+              {
+                "params": [
+                  "broken"
+                ],
+                "type": "field"
+              }
+            ]
+          ],
+          "tags": [
+            {
+              "key": "public_version",
+              "operator": "=~",
+              "value": "/^$public_version$/"
+            },
+            {
+              "condition": "AND",
+              "key": "distributions",
+              "operator": "=~",
+              "value": "/$distribution;/"
+            }
+          ]
+        },
+        {
+          "alias": "skipped",
+          "groupBy": [],
+          "hide": false,
+          "measurement": "launch_status",
+          "orderByTime": "ASC",
+          "policy": "default",
+          "refId": "C",
+          "resultFormat": "time_series",
+          "select": [
+            [
+              {
+                "params": [
+                  "skipped"
+                ],
+                "type": "field"
+              }
+            ]
+          ],
+          "tags": [
+            {
+              "key": "public_version",
+              "operator": "=~",
+              "value": "/^$public_version$/"
+            },
+            {
+              "condition": "AND",
+              "key": "distributions",
+              "operator": "=~",
+              "value": "/$distribution;/"
+            }
+          ]
+        },
+        {
+          "alias": "failed",
+          "groupBy": [],
+          "hide": false,
+          "measurement": "launch_status",
+          "orderByTime": "ASC",
+          "policy": "default",
+          "refId": "B",
+          "resultFormat": "time_series",
+          "select": [
+            [
+              {
+                "params": [
+                  "failed"
+                ],
+                "type": "field"
+              }
+            ]
+          ],
+          "tags": [
+            {
+              "key": "public_version",
+              "operator": "=~",
+              "value": "/^$public_version$/"
+            },
+            {
+              "condition": "AND",
+              "key": "distributions",
+              "operator": "=~",
+              "value": "/$distribution;/"
+            }
+          ]
+        },
+        {
+          "alias": "passed",
+          "groupBy": [],
+          "hide": false,
+          "measurement": "launch_status",
+          "orderByTime": "ASC",
+          "policy": "default",
+          "refId": "D",
+          "resultFormat": "time_series",
+          "select": [
+            [
+              {
+                "params": [
+                  "passed"
+                ],
+                "type": "field"
+              }
+            ]
+          ],
+          "tags": [
+            {
+              "key": "public_version",
+              "operator": "=~",
+              "value": "/^$public_version$/"
+            },
+            {
+              "condition": "AND",
+              "key": "distributions",
+              "operator": "=~",
+              "value": "/$distribution;/"
+            }
+          ]
+        }
+      ],
+      "timeFrom": null,
+      "timeShift": null,
+      "title": "Test results",
+      "type": "timeseries"
+    }
+  ],
+  "refresh": false,
+  "schemaVersion": 27,
+  "style": "dark",
+  "tags": [],
+  "templating": {
+    "list": [
+      {
+        "allValue": null,
+        "current": {
+          "selected": false,
+          "text": [
+            "All"
+          ],
+          "value": [
+            "$__all"
+          ]
+        },
+        "datasource": "influxdb",
+        "definition": "SHOW TAG VALUES WITH key = \"public_version\"",
+        "description": "The main product version, like 16.3.0",
+        "error": null,
+        "hide": 0,
+        "includeAll": true,
+        "label": "Full version",
+        "multi": true,
+        "name": "public_version",
+        "options": [],
+        "query": "SHOW TAG VALUES WITH key = \"public_version\"",
+        "refresh": 1,
+        "regex": "",
+        "skipUrlSync": false,
+        "sort": 2,
+        "tagValuesQuery": "",
+        "tags": [],
+        "tagsQuery": "",
+        "type": "query",
+        "useTags": false
+      },
+      {
+        "current": {
+          "selected": true,
+          "text": "current",
+          "value": "current"
+        },
+        "description": "The apt distribution, like current or current-release163",
+        "error": null,
+        "hide": 0,
+        "label": "Distribution",
+        "name": "distribution",
+        "options": [
+          {
+            "selected": true,
+            "text": "current",
+            "value": "current"
+          }
+        ],
+        "query": "current",
+        "skipUrlSync": false,
+        "type": "textbox"
+      }
+    ]
+  },
+  "time": {
+    "from": "now-30d",
+    "to": "now"
+  },
+  "timepicker": {},
+  "timezone": "",
+  "title": "NGFW ATS",
+  "uid": "EKBehXlMl",
+  "version": 1
+}
