@@ -4,9 +4,9 @@ set -eE
 
 ## constants (FIXME: common.sh)
 BIN_DIR=$(dirname $(readlink -f $0))
-REPORTS_HOST="package-server.untangle.int"
+REPORTS_HOST="build-it.untangleint.net"
 REPORTS_USER="buildbot"
-REPORTS_BASEDIR="/var/www/ats-on-demand"
+REPORTS_BASEDIR="/var/www/ats"
 TS=$(date +"%Y%m%dt%H%M")
 TS_ISO=${TS/t/T}
 
