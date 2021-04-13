@@ -1,6 +1,8 @@
 #! /bin/bash
 
 # constants (FIXME: common.sh)
+export PATH=/sbin:/usr/sbin:$PATH
+
 NGFW_CONTAINER_BASE=ats-ngfw
 CLIENT_CONTAINER_BASE=ats-client
 JUNIT_CONTAINER_VOLUME=/junit
