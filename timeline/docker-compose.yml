@@ -11,6 +11,9 @@ services:
   grafana:
     image: grafana/grafana:7.5.2
     restart: unless-stopped
+    environment:
+      GF_SECURITY_ADMIN_USER: admin
+      GF_SECURITY_ADMIN_PASSWORD: password
     depends_on:
       - influxdb
     volumes:
