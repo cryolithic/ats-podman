@@ -52,6 +52,7 @@ podman --cgroup-manager=cgroupfs exec -it \
 # but the version of pytest in buster is too old for that
 cat <<EOF > $JUNIT_LOCAL_VOLUME/environment.properties
 uvm_version=$(podman --cgroup-manager=cgroupfs exec $NGFW_CONTAINER dpkg-query -Wf '${Version}\n' untangle-vm)
+distributions=$(podman --cgroup-manager=cgroupfs exec $NGFW_CONTAINER apt-cache policy 2> /dev/null | awk '/http/ {gsub(/\/.+/, "", $3); print $3}' | uniq | xargs)
 pytest_args=$(printf "'%s' " "${PYTEST_ARGS[@]}")
 host=$(hostname -s)
 ip=$(curl ifconfig.co)
