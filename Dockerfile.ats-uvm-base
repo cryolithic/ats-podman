@@ -27,6 +27,10 @@ RUN DEBIAN_FRONTEND=noninteractive apt install --yes kmod
 # for wpa_supplicant
 RUN DEBIAN_FRONTEND=noninteractive apt install --yes dbus
 
+# remove official Debian sources
+RUN rm /etc/apt/sources.list
+RUN apt update -q
+
 # modify some services so they can run inside podman
 RUN echo "user=root" >> /etc/dnsmasq.conf
 RUN rm /etc/network/interfaces.d/lxc
