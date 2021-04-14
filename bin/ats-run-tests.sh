@@ -48,14 +48,19 @@ podman --cgroup-manager=cgroupfs exec -it \
 		     "${PYTEST_ARGS[@]}" \
 		     /usr/lib/python3/dist-packages/tests/
 
-# FIXME: ideally this should be included directly in the junit XML,
-# but the version of pytest in buster is too old for that
-cat <<EOF > $JUNIT_LOCAL_VOLUME/environment.properties
+# FIXME: ideally our metadata should be included directly in the junit
+# XML, but the version of pytest in buster is too old for that
 uvm_version=$(podman --cgroup-manager=cgroupfs exec $NGFW_CONTAINER dpkg-query -Wf '${Version}\n' untangle-vm)
+public_version=$(echo ${uvm_version} | perl -pe 's/(\d+\.\d+\.\d+).+/$1/')
 distributions=$(podman --cgroup-manager=cgroupfs exec $NGFW_CONTAINER apt-cache policy 2> /dev/null | awk '/http/ {gsub(/\/.+/, "", $3); print $3}' | uniq | xargs)
+distributions="${distributions// /;};buster"
+cat <<EOF > $JUNIT_LOCAL_VOLUME/environment.properties
+uvm_version=${uvm_version}
+public_version=${public_version}
+distributions=${distributions}
 pytest_args=$(printf "'%s' " "${PYTEST_ARGS[@]}")
-host=$(hostname -s)
-ip=$(curl ifconfig.co)
+hostname=$(hostname -s)
+external_ip=$(curl ifconfig.co)
 ngfw_container=${NGFW_CONTAINER}
 time=$(date -Iseconds)
 client_container=${CLIENT_CONTAINER}
@@ -70,5 +75,11 @@ podman --cgroup-manager=cgroupfs run -it --rm \
 	   -v ${JUNIT_LOCAL_VOLUME}:${JUNIT_CONTAINER_VOLUME} \
             ${ALLURE_IMAGE} \
             generate $JUNIT_CONTAINER_VOLUME -o $ALLURE_CONTAINER_VOLUME --clean
+
+# copy properties into destination directory
+cp $JUNIT_LOCAL_VOLUME/environment.properties $ALLURE_LOCAL_VOLUME
+
+# include our tags in influxdb data
+perl -pe 's/ /,public_version='${public_version}',distributions='"${distributions}"' /' ${ALLURE_LOCAL_VOLUME}/export/influxDbData.txt > ${ALLURE_LOCAL_VOLUME}/export/influxDbData_ngfw.txt
 
 echo "Your report is in $ALLURE_LOCAL_VOLUME"
