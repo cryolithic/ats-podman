@@ -7,6 +7,7 @@ BIN_DIR=$(dirname $(readlink -f $0))
 REPORTS_HOST="build-it.untangleint.net"
 REPORTS_USER="buildbot"
 REPORTS_BASEDIR="/var/www/ats"
+REPORTS_VERSIONDIR="/var/www/ats/by-version"
 TS=$(date +"%Y%m%dt%H%M")
 TS_ISO=${TS/t/T}
 
@@ -29,7 +30,9 @@ ${BIN_DIR}/ats-start-containers.sh $IMAGE
 
 if ${BIN_DIR}/ats-run-tests.sh $IMAGE -m "not failure_in_podman" ; then
   rc=0
-  scp -i ~${USER}/.ssh/id_rsa -r $ALLURE_LOCAL_VOLUME ${REPORTS_USER}@${REPORTS_HOST}:${REPORTS_BASEDIR}/${VERSION}/
+  scp -i ~${USER}/.ssh/id_rsa -r $ALLURE_LOCAL_VOLUME ${REPORTS_USER}@${REPORTS_HOST}:${REPORTS_VERSIONDIR}/${VERSION}/
+  ts_epoch=$(awk '{gsub(/000000$/, "", $3) ; print $3 ; exit}' $ALLURE_LOCAL_VOLUME/export/influxDbData_ngfw.txt)
+  ssh -i ~${USER}/.ssh/id_rsa ${REPORTS_USER}@${REPORTS_HOST} ln -sf ${REPORTS_VERSIONDIR}/${VERSION}/$TS_ISO /var/www/ats/by-time/$ts_epoch
 else
   rc=1
 fi
