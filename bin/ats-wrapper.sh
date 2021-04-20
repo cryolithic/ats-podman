@@ -31,8 +31,9 @@ ${BIN_DIR}/ats-start-containers.sh $IMAGE
 if ${BIN_DIR}/ats-run-tests.sh $IMAGE -m "not failure_in_podman" ; then
   rc=0
   scp -i ~${USER}/.ssh/id_rsa -r $ALLURE_LOCAL_VOLUME ${REPORTS_USER}@${REPORTS_HOST}:${REPORTS_VERSIONDIR}/${VERSION}/
+  # FIXME: the linking should be done server-side
   ts_epoch=$(awk '{gsub(/000000$/, "", $3) ; print $3 ; exit}' $ALLURE_LOCAL_VOLUME/export/influxDbData_ngfw.txt)
-  ssh -i ~${USER}/.ssh/id_rsa ${REPORTS_USER}@${REPORTS_HOST} ln -sf ${REPORTS_VERSIONDIR}/${VERSION}/$TS_ISO /var/www/ats/by-time/$ts_epoch
+  ssh -i ~${USER}/.ssh/id_rsa ${REPORTS_USER}@${REPORTS_HOST} ln -sf ../${VERSION}/$TS_ISO ${REPORTS_BASEDIR}/by-time/$ts_epoch
 else
   rc=1
 fi
