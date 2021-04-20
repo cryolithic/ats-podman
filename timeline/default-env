@@ -1,0 +1,6 @@
+INFLUXDB_DB=ats_ngfw
+
+REPORTS_DIR=/var/www/ats
+
+GRAFANA_USER=admin
+GRAFANA_PASSWORD=password

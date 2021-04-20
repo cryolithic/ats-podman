@@ -4,23 +4,34 @@ services:
     image: influxdb:1.8.4
     restart: unless-stopped
     environment:
-      INFLUXDB_DB: ats_ngfw
+      INFLUXDB_DB: ${INFLUXDB_DB}
     volumes:
       - ./data/influxdb:/var/lib/influxdb
-    ports:
-      - "9986:8086"
+
+  updater:
+    build:
+      context: .
+      dockerfile: Dockerfile.updater
+    restart: unless-stopped
+    volumes:
+      - ${REPORTS_DIR}:/reports
+    depends_on:
+      - influxdb
+    command:
+      - influxdb # FIXME: hostname from previous service
+      - ${INFLUXDB_DB}
 
   grafana:
     image: grafana/grafana:7.5.2
     restart: unless-stopped
     environment:
-      GF_SECURITY_ADMIN_USER: admin
-      GF_SECURITY_ADMIN_PASSWORD: password
+      GF_SECURITY_ADMIN_USER: ${GRAFANA_USER}
+      GF_SECURITY_ADMIN_PASSWORD: ${GRAFANA_PASSWORD}
     depends_on:
       - influxdb
     volumes:
       - ./data/grafana:/var/lib/grafana
-      - ./grafana-provisioning/:/etc/grafana/provisioning/
+      - ./grafana-provisioning:/etc/grafana/provisioning/
     ports:
       - "3000:3000"
     depends_on:
