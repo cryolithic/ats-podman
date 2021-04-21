@@ -6,7 +6,7 @@ pipeline {
   agent none
 
   parameters {
-    string(name:'version', defaultValue:'16.3.0', description:'target version')
+    string(name:'version', defaultValue:'16.4.0', description:'target version')
     string(name:'distribution', defaultValue:'current', description:'target distribution')
   }
 
