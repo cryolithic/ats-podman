@@ -24,6 +24,7 @@ services:
   grafana:
     image: grafana/grafana:7.5.2
     restart: unless-stopped
+    user: "$UID:$GID"
     environment:
       GF_SECURITY_ADMIN_USER: ${GRAFANA_USER}
       GF_SECURITY_ADMIN_PASSWORD: ${GRAFANA_PASSWORD}
