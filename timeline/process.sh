@@ -27,7 +27,7 @@ inotifywait --monitor --recursive  -e CLOSE_WRITE $REPORTS_DIR | while read dir 
   out_file=$dir/$INFLUX_NGFW_FILE
 
   if [ ! -f "$out_file" ] ; then # include our tags in influxdb data
-    source <(perl -pe 's/;/\\;/g' $report_dir/$PROPERTIES_FILE) # don't choke on single semi-colons
+    source <(perl -pe 's/=/="/ ; s/$/"/' $report_dir/$PROPERTIES_FILE) # don't choke on single semi-colons
     perl -pe 's/ /,public_version='${public_version}',distributions='"${distributions}"' /' $in_file > $out_file
   fi
 
