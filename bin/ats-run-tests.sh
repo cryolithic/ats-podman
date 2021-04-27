@@ -79,7 +79,4 @@ podman --cgroup-manager=cgroupfs run -it --rm \
 # copy properties into destination directory
 cp $JUNIT_LOCAL_VOLUME/environment.properties $ALLURE_LOCAL_VOLUME
 
-# include our tags in influxdb data
-perl -pe 's/ /,public_version='${public_version}',distributions='"${distributions}"' /' ${ALLURE_LOCAL_VOLUME}/export/influxDbData.txt > ${ALLURE_LOCAL_VOLUME}/export/influxDbData_ngfw.txt
-
 echo "Your report is in $ALLURE_LOCAL_VOLUME"
