@@ -11,7 +11,10 @@ pipeline {
   }
 
   triggers {
-    cron("@daily")
+    parameterizedCron('''
+      23 * * * *
+      01 * * * * %version=16.3.0;distribution=current-release163
+      ''')
   }
 
   stages {
