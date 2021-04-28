@@ -29,5 +29,14 @@ perl -i -pe 's/(?<=^unqualified-search-registries = ).*/["docker.io"]/' /etc/con
 # remove non-Untangle kernels 
 DEBIAN_FRONTEND=noninteractive apt purge -y $(dpkg -l | awk '/ii  linux-image/ && !/untangle/ { print $2}')
 
+# set some sysctls (https://bugzilla.redhat.com/show_bug.cgi?id=1829596)
+SYSCTLS_PODMAN=/etc/sysctl.d/99-podman.conf
+cat <<EOF > $SYSCTLS_PODMAN
+fs.inotify.max_queued_events = 1048576
+fs.inotify.max_user_instances = 1048576
+fs.inotify.max_user_watches = 1048576
+EOF
+sysctl -p $SYSCTLS_PODMAN
+
 # notify reboot on the Untangle kernel
 uname -a | grep -qi untangle  || echo "You need to reboot on the Untangle kernel"
