@@ -12,8 +12,8 @@ pipeline {
 
   triggers {
     parameterizedCron('''
-      23 * * * *
-      01 * * * * %version=16.3.0;distribution=current-release163
+      0 23 * * *
+      0 01 * * * %version=16.3.0;distribution=current-release163
       ''')
   }
 
