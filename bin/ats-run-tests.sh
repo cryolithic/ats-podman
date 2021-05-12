@@ -54,13 +54,17 @@ uvm_version=$(podman --cgroup-manager=cgroupfs exec $NGFW_CONTAINER dpkg-query -
 public_version=$(echo ${uvm_version} | perl -pe 's/(\d+\.\d+\.\d+).+/$1/')
 distributions=$(podman --cgroup-manager=cgroupfs exec $NGFW_CONTAINER apt-cache policy 2> /dev/null | awk '/http/ {gsub(/\/.+/, "", $3); print $3}' | uniq | xargs)
 distributions="${distributions// /;};buster"
+external_ip="$(curl -f https://ifconfig.co)"
+if [[ $? != 0 ]] ; then
+  external_ip="error on https://ifconfig.co"
+fi
 cat <<EOF > $JUNIT_LOCAL_VOLUME/environment.properties
 uvm_version=${uvm_version}
 public_version=${public_version}
 distributions=${distributions}
 pytest_args=$(printf "'%s' " "${PYTEST_ARGS[@]}")
 hostname=$(hostname -s)
-external_ip=$(curl ifconfig.co)
+external_ip=${external_ip}
 ngfw_container=${NGFW_CONTAINER}
 time=$(date -Iseconds)
 client_container=${CLIENT_CONTAINER}
