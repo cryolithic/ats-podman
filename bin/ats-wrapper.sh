@@ -30,7 +30,8 @@ ${BIN_DIR}/ats-start-containers.sh $IMAGE
 
 if ${BIN_DIR}/ats-run-tests.sh $IMAGE -m "not failure_in_podman" ; then
   rc=0
-  rsync -e "ssh -i ~${USER}/.ssh/id_rsa" -aHvP ${ALLURE_LOCAL_VOLUME} ${REPORTS_USER}@${REPORTS_HOST}:${REPORTS_VERSIONDIR}/${VERSION}/
+  # make sure we use the correctly key when run through sudo
+  scp -i ~${USER}/.ssh/id_rsa -r ${ALLURE_LOCAL_VOLUME} ${REPORTS_USER}@${REPORTS_HOST}:${REPORTS_VERSIONDIR}/${VERSION}/
 else
   rc=1
 fi
