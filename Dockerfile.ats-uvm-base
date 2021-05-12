@@ -20,16 +20,16 @@ RUN echo deb http://foo:foo@${MIRROR}/public/buster ${DISTRIBUTION} main non-fre
 RUN apt-key adv --keyserver keyserver.ubuntu.com --recv-keys 735A9E18E8F62EDF413592460B9D6AE3627BF103
 
 # install dependencies
-RUN apt update -q
-RUN DEBIAN_FRONTEND=noninteractive apt install --yes untangle-development-runtime
 RUN DEBIAN_FRONTEND=noninteractive apt install --yes kmod
-
 # for wpa_supplicant
 RUN DEBIAN_FRONTEND=noninteractive apt install --yes dbus
 
 # remove official Debian sources
 RUN rm /etc/apt/sources.list
 RUN apt update -q
+
+# runtime deps
+RUN DEBIAN_FRONTEND=noninteractive apt install --yes untangle-development-runtime
 
 # modify some services so they can run inside podman
 RUN echo "user=root" >> /etc/dnsmasq.conf
