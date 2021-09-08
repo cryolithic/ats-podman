@@ -1,5 +1,5 @@
-void run_ats(distribution, version) {
-  sh "sudo ./bin/ats-wrapper.sh ${distribution} ${version}"
+void run_ats(distribution, version, extra_dev_distribution) {
+  sh "sudo ./bin/ats-wrapper.sh -e '${extra_dev_distribution}' ${distribution} ${version}"
 }
 
 pipeline {
@@ -8,6 +8,7 @@ pipeline {
   parameters {
     string(name:'version', defaultValue:'16.4.0', description:'target version')
     string(name:'distribution', defaultValue:'current', description:'target distribution')
+    string(name:'extra_dev_distribution', defaultValue:env.branch_NAME, description:'extra dev distribution (for PRs)')
   }
 
   triggers {
@@ -22,7 +23,7 @@ pipeline {
     stage('Run ATS') {
       agent { label 'podman' }
       steps {
-        run_ats(distribution, version)
+        run_ats(distribution, version, extra_dev_distribution)
       }
 
       post {

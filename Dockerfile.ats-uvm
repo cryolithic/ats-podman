@@ -1,17 +1,16 @@
-ARG DISTRIBUTION=16.2.2
+ARG DISTRIBUTION=16.3.2
 #ARG DISTRIBUTION=current
 
 FROM untangleinc/ngfw-ats:uvm-base-${DISTRIBUTION}
 LABEL maintainer="Sebastien Delafond <sdelafond@gmail.com>"
 
-ARG MIRROR=updates.untangle.com
-#ARG MIRROR=package-server.untangle.int
+ARG MIRROR=updates.untangle.com/public
+#ARG MIRROR=package-server.untangle.int/public
 
-# re-use the one from above
-ARG DISTRIBUTION
+ARG EXTRA_DEV_DISTRIBUTION
 
-# add extra source (could be different from the one used in uvm-base
-RUN echo deb http://foo:foo@${MIRROR}/public/buster ${DISTRIBUTION} main non-free > /etc/apt/sources.list.d/untangle-ats-${DISTRIBUTION}.list
+# add extra source
+RUN echo deb [trusted=yes] http://foo:foo@${MIRROR}/buster ${EXTRA_DEV_DISTRIBUTION} main non-free > /etc/apt/sources.list.d/untangle-ats-${EXTRA_DEV_DISTRIBUTION}.list
 RUN apt update -q
 RUN apt dist-upgrade -y
 

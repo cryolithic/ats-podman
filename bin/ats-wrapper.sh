@@ -2,6 +2,13 @@
 
 set -eE
 
+## functions
+usage() {
+  echo "Usage: $0 [-e extra_apt_dev_distribution] <distribution> <base_version>"
+  echo "  example: $0 current 16.3.0"
+  echo "  example: $0 -e NGFW-12345 16.4.0"
+}
+
 ## constants (FIXME: common.sh)
 BIN_DIR=$(dirname $(readlink -f $0))
 REPORTS_HOST="build-it.untangleint.net"
@@ -14,9 +21,17 @@ TS_ISO=${TS/t/T}
 ## main
 
 # CLI parameters
-if [ $# != 2 ] ; then
-  echo "Usage: $0 <distribution> <version>"
-  exit 1
+while getopts "e:" opt ; do
+  case "$opt" in
+    e) EXTRA_DEV_DISTRIBUTION=$OPTARG ;;
+    h) usage ;;
+    \?) usage ;;
+  esac
+done
+
+shift $(($OPTIND - 1))
+if [[ $# != 2 ]] ; then
+  usage
 fi
 
 DISTRIBUTION=$1
@@ -25,7 +40,7 @@ VERSION=$2
 IMAGE=ngfw:${VERSION}-${TS}
 ALLURE_LOCAL_VOLUME=./allure/${VERSION}/$TS_ISO
 
-${BIN_DIR}/ats-build-containers.sh $DISTRIBUTION $IMAGE
+${BIN_DIR}/ats-build-containers.sh -e "$EXTRA_DEV_DISTRIBUTION" $DISTRIBUTION $IMAGE
 ${BIN_DIR}/ats-start-containers.sh $IMAGE
 
 if ${BIN_DIR}/ats-run-tests.sh $IMAGE -m "not failure_in_podman" ; then

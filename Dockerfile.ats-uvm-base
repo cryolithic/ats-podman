@@ -1,9 +1,9 @@
 FROM debian:buster
 LABEL maintainer="Sebastien Delafond <sdelafond@gmail.com>"
 
-ARG MIRROR=updates.untangle.com
-#ARG MIRROR=package-server.untangle.int
-ARG DISTRIBUTION=16.2.2
+ARG MIRROR=updates.untangle.com/public
+#ARG MIRROR=package-server.untangle.int/public
+ARG DISTRIBUTION=16.3.2
 #ARG DISTRIBUTION=current
 
 USER root
@@ -16,7 +16,7 @@ RUN apt update -q
 
 # Untangle sources
 RUN apt install -y gnupg dirmngr
-RUN echo deb http://foo:foo@${MIRROR}/public/buster ${DISTRIBUTION} main non-free > /etc/apt/sources.list.d/untangle-${DISTRIBUTION}.list
+RUN echo deb [trusted=yes] http://foo:foo@${MIRROR}/buster ${DISTRIBUTION} main non-free > /etc/apt/sources.list.d/untangle-${DISTRIBUTION}.list
 RUN apt-key adv --keyserver keyserver.ubuntu.com --recv-keys 735A9E18E8F62EDF413592460B9D6AE3627BF103
 
 # install dependencies
