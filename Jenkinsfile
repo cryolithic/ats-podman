@@ -1,5 +1,5 @@
 void run_ats(distribution, version, extra_dev_distribution) {
-  sh "sudo ./bin/ats-wrapper.sh -e '${extra_dev_distribution}' ${distribution} ${version}"
+  sh "sudo ./bin/jenkins-ats-wrapper.sh -e '${extra_dev_distribution}' ${distribution} ${version}"
 }
 
 pipeline {
