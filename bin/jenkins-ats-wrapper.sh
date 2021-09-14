@@ -26,7 +26,7 @@ while getopts "e:h" opt ; do
   case "$opt" in
     e)
       CL_EXTRA_DEV_DISTRIBUTION=$OPTARG
-      EXTRA_DEV_DISTRIBUTION=$(basename OPTARG) ;;
+      EXTRA_DEV_DISTRIBUTION=$(basename $OPTARG) ;;
     h) usage ;;
   esac
 done
