@@ -103,6 +103,11 @@ network_config=$(mktemp /tmp/network-config-static-XXXXXXXX.js)
 ${BIN_DIR}/generate-static-network-config.py $NGFW_CONTAINER $EXTERNAL_NET > $network_config
 
 echo -n "injecting UVM network settings: "
+# create the directory 1st: sometimes the NGFW container starts so
+# fast that the 2 manual netns calls above happen only after the UVM
+# startup has tried to started, resulting in a UVM crash. In that
+# scenario, the directory doesn't exist and we loop forever
+podman --cgroup-manager=cgroupfs exec ${NGFW_CONTAINER} mkdir -p $(dirname ${NGFW_NETWORK_SETTINGS})
 while ! podman --cgroup-manager=cgroupfs cp $network_config ${NGFW_CONTAINER}:${NGFW_NETWORK_SETTINGS} 2> /dev/null ; do
   echo -n "."
   sleep 1
