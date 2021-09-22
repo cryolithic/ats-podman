@@ -4,7 +4,8 @@ set -eE
 
 ## functions
 usage() {
-  echo "Usage: $0 [-e extra_apt_dev_distribution] <distribution> <base_version>"
+  echo "Usage: $0 [-e extra_apt_dev_distribution] <distribution> <base_version> [...]"
+  echo "(extra optional args are passed directly to ats-run-tests.sh)"
   echo "  example: $0 current 16.3.0"
   echo "  example: $0 -e NGFW-12345 16.4.0"
   exit 1
@@ -26,30 +27,32 @@ while getopts "e:h" opt ; do
   case "$opt" in
     e)
       CL_EXTRA_DEV_DISTRIBUTION=$OPTARG
-      EXTRA_DEV_DISTRIBUTION=$(basename $OPTARG) ;;
+      EXTRA_DEV_DISTRIBUTION=$(basename $OPTARG)
+      VERSION_QUALIFIER="_${EXTRA_DEV_DISTRIBUTION}" ;;
     h) usage ;;
   esac
 done
 shift $(($OPTIND - 1))
 
-if [[ $# != 2 ]] ; then
+if [[ $# -lt 2 ]] ; then
   usage
 fi
 
 DISTRIBUTION=$1
 VERSION=$2
+shift 2
 
-IMAGE=ngfw:${VERSION}-${TS}
-ALLURE_LOCAL_VOLUME=./allure/${VERSION}/$TS_ISO
+IMAGE=ngfw:${VERSION}${VERSION_QUALIFIER}_${TS}
+ALLURE_LOCAL_VOLUME=./allure/${VERSION}${VERSION_QUALIFIER}/$TS_ISO
 
 ${BIN_DIR}/ats-build-containers.sh -e "$EXTRA_DEV_DISTRIBUTION" $DISTRIBUTION $IMAGE
 ${BIN_DIR}/ats-start-containers.sh $IMAGE
 
-if ${BIN_DIR}/ats-run-tests.sh $IMAGE -m "not failure_in_podman" ; then
+if ${BIN_DIR}/ats-run-tests.sh $IMAGE -m "not failure_in_podman" $@ ; then
   rc=0
   status="success"
   # make sure we use the correct key when run through sudo
-  scp -i ~${USER}/.ssh/id_rsa -r ${ALLURE_LOCAL_VOLUME} ${REPORTS_USER}@${REPORTS_HOST}:${REPORTS_VERSIONDIR}/${VERSION}/
+  scp -i ~${USER}/.ssh/id_rsa -r ${ALLURE_LOCAL_VOLUME} ${REPORTS_USER}@${REPORTS_HOST}:${REPORTS_VERSIONDIR}/${VERSION}${VERSION_QUALIFIER}/
 else
   rc=1
   status="failure"

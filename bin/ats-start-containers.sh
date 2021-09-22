@@ -37,13 +37,13 @@ on_err() {
 trap on_err ERR
 
 # extract version
-VERSION=$(echo ${IMAGE} | perl -pe 's/.*?:([\d.]+)-?.*/$1/')
+VERSION=$(echo ${IMAGE} | perl -pe 's/.*?:(.+?)(_[\dt]+)?$/$1/')
 [ -n "$VERSION" ] || VERSION=0.0.0
-TS=$(echo $IMAGE | sed -e 's/.*-//')
-NGFW_CONTAINER=${NGFW_CONTAINER_BASE}-${VERSION}-$TS
-CLIENT_CONTAINER=${CLIENT_CONTAINER_BASE}-${VERSION}-$TS
-EXTERNAL_NET=${EXTERNAL_NET_BASE}-${VERSION}-$TS
-INTERNAL_NET=${INTERNAL_NET_BASE}-${VERSION}-$TS
+TS=$(echo ${IMAGE} | perl -pe 's/.*?_([\dt]+)$/$1/')
+NGFW_CONTAINER=${NGFW_CONTAINER_BASE}-${VERSION}_$TS
+CLIENT_CONTAINER=${CLIENT_CONTAINER_BASE}-${VERSION}_$TS
+EXTERNAL_NET=${EXTERNAL_NET_BASE}-${VERSION}_$TS
+INTERNAL_NET=${INTERNAL_NET_BASE}-${VERSION}_$TS
 JUNIT_LOCAL_VOLUME=./junit/${VERSION}/${TS/t/T}
 
 # load modules

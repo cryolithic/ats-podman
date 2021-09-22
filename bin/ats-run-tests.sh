@@ -25,11 +25,11 @@ shift
 PYTEST_ARGS=("$@")
 
 # extract version
-VERSION=$(echo ${IMAGE} | perl -pe 's/.*?:([\d.]+)-?.*/$1/')
+VERSION=$(echo ${IMAGE} | perl -pe 's/.*?:(.+?)(_[\dt]+)?$/$1/')
 [ -n "$VERSION" ] || VERSION=0.0.0
-TS=$(echo $IMAGE | sed -e 's/.*-//')
-NGFW_CONTAINER=${NGFW_CONTAINER_BASE}-${VERSION}-$TS
-CLIENT_CONTAINER=${CLIENT_CONTAINER_BASE}-${VERSION}-$TS
+TS=$(echo ${IMAGE} | perl -pe 's/.*?_([\dt]+)$/$1/')
+NGFW_CONTAINER=${NGFW_CONTAINER_BASE}-${VERSION}_$TS
+CLIENT_CONTAINER=${CLIENT_CONTAINER_BASE}-${VERSION}_$TS
 JUNIT_LOCAL_VOLUME=./junit/${VERSION}/${TS/t/T}
 ALLURE_LOCAL_VOLUME=./allure/${VERSION}/${TS/t/T}
 
