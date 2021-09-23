@@ -64,7 +64,7 @@ if [[ "$CL_EXTRA_DEV_DISTRIBUTION" =~ "." ]] ; then
   git_repo=${EXTRA_DEV_DISTRIBUTION%*.}
   git_branch=${EXTRA_DEV_DISTRIBUTION#.*}
   url="http://jenkins.untangle.int/blue/organizations/jenkins/ats-podman/activity?branch=${CL_EXTRA_DEV_DISTRIBUTION}"
-  echo $url | ${BIN_DIR}/github-set-status.sh $git_repo $EXTRA_DEV_DISTRIBUTION_BRANCH ATS $status
+  ${BIN_DIR}/github-set-status.sh $git_repo $EXTRA_DEV_DISTRIBUTION_BRANCH ATS $status $url "Completed"
 fi
 
 ${BIN_DIR}/ats-stop-containers.sh $IMAGE

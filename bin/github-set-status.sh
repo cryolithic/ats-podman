@@ -12,7 +12,7 @@ log() {
 }
 
 usage() {
-  echo "Usage: $(basename $0) <github_repo> <github_branch> <github_status_context> <github_status_state>"
+  echo "Usage: $(basename $0) <github_repo> <github_branch> <github_status_context> <github_status_state> <target_url> <description>"
   echo "  contexts supported: dev-packages, ATS" 
   exit 1
 }
@@ -20,7 +20,7 @@ usage() {
 ## main
 
 # CLI parameters
-if [[ $# != 4 ]] ; then
+if [[ $# != 6 ]] ; then
   usage
 fi
 
@@ -28,19 +28,10 @@ GITHUB_REPO=$1
 GITHUB_BRANCH=$2
 GITHUB_STATUS_CONTEXT=$3
 GITHUB_STATUS_STATE=$4
-log "started with github_repo=$GITHUB_REPO, github_branch=$GITHUB_BRANCH, github_status_context=$GITHUB_STATUS_CONTEXT, github_status_state=$GITHUB_STATUS_STATE"
+GITHUB_STATUS_TARGET_URL=$5
+GITHUB_STATUS_DESC=$6
 
-case $GITHUB_STATUS_CONTEXT in
-  dev-packages)
-    github_status_target_url=https://intranet.untangle.com/display/ngfw/Testing+packages+built+directly+from+GitHub+pull+requests
-    github_status_desc="$(cat /dev/stdin)"
-    ;;
-  ATS)
-    github_status_target_url="$(cat /dev/stdin)"
-    github_status_desc="In progress - ATS started"
-    ;;
-  *) usage ;;
-esac
+log "started with github_repo=$GITHUB_REPO, github_branch=$GITHUB_BRANCH, github_status_context=$GITHUB_STATUS_CONTEXT, github_status_state=$GITHUB_STATUS_STATE, github_status_target_url=$GITHUB_STATUS_TARGET_URL, github_status_desc=$GITHUB_STATUS_DESC"
 
 # get GITHUB_TOKEN from .env file if it's there
 [[ ! -f  ${BASE_DIR}/.env ]] || source ${BASE_DIR}/.env
@@ -64,5 +55,5 @@ curl -s \
   -X POST \
   -H "Authorization: token $GITHUB_TOKEN" \
   -H "Accept: application/vnd.github.v3+json" \
-  -d '{"state":"'$GITHUB_STATUS_STATE'", "target_url":"'$github_status_target_url'", "context":"'$GITHUB_STATUS_CONTEXT'", "description":"'"${github_status_desc}"'"}' \
+  -d '{"state":"'$GITHUB_STATUS_STATE'", "target_url":"'$GITHUB_STATUS_TARGET_URL'", "context":"'$GITHUB_STATUS_CONTEXT'", "description":"'"${GITHUB_STATUS_DESC}"'"}' \
   https://api.github.com/repos/untangle/${GITHUB_REPO}/statuses/$last_commit > /dev/null
