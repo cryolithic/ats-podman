@@ -23,7 +23,7 @@ pipeline {
     stage('Run ATS') {
       agent { label 'podman' }
       steps {
-        run_ats(distribution, version, extra_dev_distribution)
+        run_ats(params.distribution, params.version, params.extra_dev_distribution)
       }
 
       post {
