@@ -1,5 +1,6 @@
 #! /bin/bash
 
+set -x
 set -eE
 
 ## constants
@@ -16,7 +17,7 @@ MANUAL_SYSCTLS="vm.max_map_count=262144 net.ipv4.ip_local_reserved_ports=4500,54
 
 ## functions
 shorten_name() {
-  echo $1 | perl -pe 's/(\..+?-\d{5,6}).*/$1/'
+  echo $1 | perl -pe 's/(\..+?-\d{5,6}).*/$1/ ; s/\./-/g'
 }
 
 ## main
@@ -83,7 +84,7 @@ podman --cgroup-manager=cgroupfs run -it --rm \
 	   --dns=none \
 	   --no-hosts \
 	   --network ${EXTERNAL_NET},${INTERNAL_NET} \
-	   --hostname $(shorten_name ${NGFW_CONTAINER})
+	   --hostname $(shorten_name ${NGFW_CONTAINER}) \
 	   --volume ${JUNIT_LOCAL_VOLUME}:${JUNIT_CONTAINER_VOLUME} \
 	   -d \
 	   --name $NGFW_CONTAINER \
