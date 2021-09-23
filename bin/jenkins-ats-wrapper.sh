@@ -58,10 +58,11 @@ else
   status="failure"
 fi
 
-if [[ "$CL_EXTRA_DEV_DISTRIBUTION" =~ "/" ]] ; then
+if [[ "$CL_EXTRA_DEV_DISTRIBUTION" =~ "." ]] ; then
   # we're working off a GitHub PR, close the corresponding "pending"
   # status
-  git_repo=$(dirname $EXTRA_DEV_DISTRIBUTION)
+  git_repo=${EXTRA_DEV_DISTRIBUTION%*.}
+  git_branch=${EXTRA_DEV_DISTRIBUTION#.*}
   url="http://jenkins.untangle.int/blue/organizations/jenkins/ats-podman/activity?branch=${CL_EXTRA_DEV_DISTRIBUTION}"
   echo $url | ${BIN_DIR}/github-set-status.sh $git_repo $EXTRA_DEV_DISTRIBUTION_BRANCH ATS $status
 fi
