@@ -83,7 +83,7 @@ podman --cgroup-manager=cgroupfs run -it --rm \
 	   --dns=none \
 	   --no-hosts \
 	   --network ${EXTERNAL_NET},${INTERNAL_NET} \
-	   --hostname $(shorten_name echo ${NGFW_CONTAINER})
+	   --hostname $(shorten_name ${NGFW_CONTAINER})
 	   --volume ${JUNIT_LOCAL_VOLUME}:${JUNIT_CONTAINER_VOLUME} \
 	   -d \
 	   --name $NGFW_CONTAINER \
