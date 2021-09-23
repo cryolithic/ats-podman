@@ -14,6 +14,11 @@ NGFW_NETWORK_SETTINGS=/usr/share/untangle/settings/untangle-vm/network.js
 JUNIT_CONTAINER_VOLUME=/junit
 MANUAL_SYSCTLS="vm.max_map_count=262144 net.ipv4.ip_local_reserved_ports=4500,5432,8009,8123,8484"
 
+## functions
+shorten_name() {
+  echo $1 | perl -pe 's/(\..+?-\d{5,6}).*/$1/'
+}
+
 ## main
 
 # CLI parameters
@@ -78,7 +83,7 @@ podman --cgroup-manager=cgroupfs run -it --rm \
 	   --dns=none \
 	   --no-hosts \
 	   --network ${EXTERNAL_NET},${INTERNAL_NET} \
-	   --hostname ${NGFW_CONTAINER//./-} \
+	   --hostname $(shorten_name echo ${NGFW_CONTAINER})
 	   --volume ${JUNIT_LOCAL_VOLUME}:${JUNIT_CONTAINER_VOLUME} \
 	   -d \
 	   --name $NGFW_CONTAINER \
@@ -128,7 +133,7 @@ podman --cgroup-manager=cgroupfs run -it --rm \
 	   --dns=none \
 	   --no-hosts \
 	   --network $INTERNAL_NET \
-	   --hostname ${CLIENT_CONTAINER//./-} \
+	   --hostname $(shorten_name ${CLIENT_CONTAINER}) \
 	   -d \
 	   --name $CLIENT_CONTAINER \
 	   untangleinc/ngfw-ats:client-buster > /dev/null
