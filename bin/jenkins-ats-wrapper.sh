@@ -26,8 +26,7 @@ TS_ISO=${TS/t/T}
 while getopts "e:h" opt ; do
   case "$opt" in
     e)
-      CL_EXTRA_DEV_DISTRIBUTION=$OPTARG
-      EXTRA_DEV_DISTRIBUTION=$(basename $OPTARG)
+      EXTRA_DEV_DISTRIBUTION=$OPTARG
       VERSION_QUALIFIER="_${EXTRA_DEV_DISTRIBUTION}" ;;
     h) usage ;;
   esac
@@ -58,13 +57,13 @@ else
   status="failure"
 fi
 
-if [[ "$CL_EXTRA_DEV_DISTRIBUTION" =~ "." ]] ; then
+if [[ "$EXTRA_DEV_DISTRIBUTION" =~ "." ]] ; then
   # we're working off a GitHub PR, close the corresponding "pending"
   # status
-  git_repo=${EXTRA_DEV_DISTRIBUTION%*.}
-  git_branch=${EXTRA_DEV_DISTRIBUTION#.*}
-  url="http://jenkins.untangle.int/blue/organizations/jenkins/ats-podman/activity?branch=${CL_EXTRA_DEV_DISTRIBUTION}"
-  ${BIN_DIR}/github-set-status.sh $git_repo $EXTRA_DEV_DISTRIBUTION_BRANCH ATS $status $url "Completed"
+  git_repo=${EXTRA_DEV_DISTRIBUTION%.*}
+  git_branch=${EXTRA_DEV_DISTRIBUTION#*.}
+  url="http://jenkins.untangle.int/blue/organizations/jenkins/ats-podman/activity?branch=${EXTRA_DEV_DISTRIBUTION}"
+  ${BIN_DIR}/github-set-status.sh $git_repo $git_branch ATS $status "$url" "Completed"
 fi
 
 ${BIN_DIR}/ats-stop-containers.sh $IMAGE

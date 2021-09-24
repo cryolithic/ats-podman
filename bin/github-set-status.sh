@@ -13,7 +13,6 @@ log() {
 
 usage() {
   echo "Usage: $(basename $0) <github_repo> <github_branch> <github_status_context> <github_status_state> <target_url> <description>"
-  echo "  contexts supported: dev-packages, ATS" 
   exit 1
 }
 
