@@ -8,7 +8,7 @@ pipeline {
   parameters {
     string(name:'version', defaultValue:'16.4.0', description:'target version')
     string(name:'distribution', defaultValue:'current', description:'target distribution')
-    string(name:'extra_dev_distribution', defaultValue:env.branch_NAME, description:'extra dev distribution (for PRs)')
+    string(name:'extra_dev_distribution', defaultValue:env.BRANCH_NAME, description:'extra dev distribution (for PRs)')
   }
 
   triggers {
@@ -22,8 +22,13 @@ pipeline {
 
     stage('Run ATS') {
       agent { label 'podman' }
+      when {
+        expression {
+          return (!(currentBuild.buildCauses[0].shortDescription =~ "timer") || env.BRANCH_NAME == 'master')
+        }
+      }
       steps {
-        run_ats(distribution, version, extra_dev_distribution)
+        run_ats(params.distribution, params.version, params.extra_dev_distribution)
       }
 
       post {
