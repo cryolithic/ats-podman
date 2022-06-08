@@ -6,7 +6,7 @@ pipeline {
   agent none
 
   parameters {
-    string(name:'version', defaultValue:'16.4.0', description:'target version')
+    string(name:'version', defaultValue:'16.5.1', description:'target version')
     string(name:'distribution', defaultValue:'current', description:'target distribution')
     string(name:'extra_dev_distribution', defaultValue:env.BRANCH_NAME, description:'extra dev distribution (for PRs)')
   }
@@ -14,7 +14,7 @@ pipeline {
   triggers {
     parameterizedCron('''
       0 23 * * *
-      0 01 * * * %version=16.3.0;distribution=current-release163
+      0 01 * * * %version=16.4.0;distribution=ngfw-release-16.4
       ''')
   }
 
