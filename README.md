@@ -110,7 +110,7 @@ Here's an example of an Allure report:
       --skip-instantiated=true -m web_cache
       /usr/lib/python3/dist-packages/tests`
 	  
-- [ ] some tests fail in a container environment, but succedd in the
+- [ ] some tests fail in a container environment, but succeed in the
       official QA ATS infrastructure. The full list list of those tests
       is being assembled, so they can be investigated one by one.
 	  

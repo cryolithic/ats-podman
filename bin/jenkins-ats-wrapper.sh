@@ -13,7 +13,7 @@ usage() {
 
 ## constants (FIXME: common.sh)
 BIN_DIR=$(dirname $(readlink -f $0))
-REPORTS_HOST="build-it.untangleint.net"
+REPORTS_HOST="aws-build-04.untangle.int"
 REPORTS_USER="buildbot"
 REPORTS_BASEDIR="/var/www/ats"
 REPORTS_VERSIONDIR="/var/www/ats/by-version"
