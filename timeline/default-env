@@ -4,3 +4,7 @@ REPORTS_DIR=/var/www/ats
 
 GRAFANA_USER=admin
 GRAFANA_PASSWORD=password
+
+# use something like "%(protocol)s://%(domain)s:/some-sub-dir" if
+# you're reverse-proxying it
+GRAFANA_SERVER_ROOT_URL=%(protocol)s://%(domain)s
