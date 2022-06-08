@@ -5,3 +5,4 @@ allure
 junit
 timeline/data
 data
+.env
