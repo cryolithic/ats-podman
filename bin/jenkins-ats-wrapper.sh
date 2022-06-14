@@ -51,6 +51,7 @@ if ${BIN_DIR}/ats-run-tests.sh $IMAGE -m "not failure_in_podman" $@ ; then
   rc=0
   status="success"
   # make sure we use the correct key when run through sudo
+  ssh -i ~${USER}/.ssh/id_rsa ${REPORTS_USER}@${REPORTS_HOST} mkdir -p ${REPORTS_VERSIONDIR}/${VERSION}${VERSION_QUALIFIER}/
   scp -i ~${USER}/.ssh/id_rsa -r ${ALLURE_LOCAL_VOLUME} ${REPORTS_USER}@${REPORTS_HOST}:${REPORTS_VERSIONDIR}/${VERSION}${VERSION_QUALIFIER}/
 else
   rc=1
