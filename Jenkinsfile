@@ -7,7 +7,7 @@ pipeline {
 
   parameters {
     string(name:'version', defaultValue:'16.5.1', description:'target version')
-    string(name:'distribution', defaultValue:'current', description:'target distribution')
+    string(name:'distribution', defaultValue:'ngfw-release-16.5', description:'target distribution')
     string(name:'extra_dev_distribution', defaultValue:env.BRANCH_NAME, description:'extra dev distribution (for PRs)')
   }
 
