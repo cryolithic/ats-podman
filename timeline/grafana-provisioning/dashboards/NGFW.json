@@ -477,7 +477,7 @@
             {
               "targetBlank": true,
               "title": "Allure report",
-              "url": "http://build-it.untangleint.net/ats/by-time/${__value.time}"
+              "url": "http://ats-podman.untangle.int/ats/by-time/${__value.time}"
             }
           ],
           "unit": "short"
@@ -717,7 +717,7 @@
         },
         "datasource": "influxdb",
         "definition": "SHOW TAG VALUES WITH key = \"public_version\"",
-        "description": "The main product version, like 16.3.0",
+        "description": "The main product version, like 16.5.1",
         "error": null,
         "hide": 0,
         "includeAll": true,
@@ -742,7 +742,7 @@
           "text": "current",
           "value": "current"
         },
-        "description": "The apt distribution, like current or current-release163",
+        "description": "The apt distribution, like current or ngfw-release-16.5",
         "error": null,
         "hide": 0,
         "label": "Distribution",
